@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="439.0" prefWidth="623.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="voyage.LoginController">
+   <children>
+      <AnchorPane fx:id="main_form" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <AnchorPane prefHeight="444.0" prefWidth="303.0" styleClass="left-form" stylesheets="@loginDesign.css">
+               <children>
+                  <FontAwesomeIcon fill="WHITE" glyphName="BUS" layoutX="96.0" layoutY="190.0" size="10em" />
+                  <Label layoutX="24.0" layoutY="264.0" text="MICDA VOYAGE" textFill="WHITE">
+                     <font>
+                        <Font name="Tahoma Bold" size="30.0" />
+                     </font>
+                  </Label>
+               </children></AnchorPane>
+            <AnchorPane layoutX="312.0" prefHeight="444.0" prefWidth="325.0" styleClass="right-form" stylesheets="@loginDesign.css" AnchorPane.rightAnchor="-4.0">
+               <children>
+                  <FontAwesomeIcon glyphName="USER" layoutX="115.0" layoutY="119.0" size="8em" />
+                  <Label layoutX="39.0" layoutY="144.0" text="Systéme  Authentification">
+                     <font>
+                        <Font name="Tahoma Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="login" layoutX="39.0" layoutY="207.0" onAction="#login" prefHeight="30.0" prefWidth="200.0" promptText="Login" styleClass="textfield" stylesheets="@loginDesign.css" />
+                  <PasswordField fx:id="password" layoutX="39.0" layoutY="261.0" onAction="#login" prefHeight="30.0" prefWidth="200.0" promptText="Password" styleClass="textfield" stylesheets="@loginDesign.css" />
+                  <Button fx:id="btnConnexion" layoutX="39.0" layoutY="314.0" mnemonicParsing="false" onAction="#login" prefHeight="35.0" prefWidth="200.0" styleClass="login-btn" stylesheets="@loginDesign.css" text="Connexion" />
+                  <Button fx:id="close" layoutX="284.0" layoutY="2.0" mnemonicParsing="false" onAction="#close" styleClass="close" stylesheets="@loginDesign.css" text="X" AnchorPane.rightAnchor="2.0">
+                     <font>
+                        <Font name="Tahoma Bold" size="18.0" />
+                     </font></Button>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
