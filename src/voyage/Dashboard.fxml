@@ -21,9 +21,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1100.0" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1100.0" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="voyage.DashboardController">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane fx:id="Main_formulaire" prefHeight="200.0" prefWidth="200.0">
          <children>
             <BorderPane prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <top>
@@ -37,12 +37,12 @@
                                     <Font name="Tahoma" size="14.0" />
                                  </font>
                               </Label>
-                              <Button layoutX="1054.0" layoutY="1.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="44.0" styleClass="close" stylesheets="@dashboard.css" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="1.0">
+                              <Button fx:id="Btn_close" layoutX="1054.0" layoutY="1.0" mnemonicParsing="false" onAction="#Btn_close" prefHeight="29.0" prefWidth="44.0" styleClass="close" stylesheets="@dashboard.css" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="1.0">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="CLOSE" size="1.2em" />
                                  </graphic>
                               </Button>
-                              <Button layoutX="1006.0" layoutY="1.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="44.0" styleClass="minimize" stylesheets="@dashboard.css" AnchorPane.rightAnchor="50.0">
+                              <Button fx:id="Btn_minimize" layoutX="1006.0" layoutY="1.0" mnemonicParsing="false" onAction="#minimize" prefHeight="29.0" prefWidth="44.0" styleClass="minimize" stylesheets="@dashboard.css" AnchorPane.rightAnchor="50.0">
                                  <graphic>
                                     <FontAwesomeIcon glyphName="MINUS" size="1.2em" />
                                  </graphic>
@@ -62,32 +62,32 @@
                            </font>
                         </Label>
                         <Line endX="83.5" layoutX="100.0" layoutY="149.0" startX="-85.5" stroke="WHITE" />
-                        <Button layoutX="6.0" layoutY="181.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Accueil">
+                        <Button fx:id="Menu_Home" layoutX="6.0" layoutY="181.0" mnemonicParsing="false" onAction="#menu" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Accueil">
                            <graphic>
                               <FontAwesomeIcon fill="#fffafa" glyphName="DASHBOARD" size="1.5em" />
                            </graphic>
                         </Button>
-                        <Button layoutX="10.0" layoutY="227.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Bus">
+                        <Button fx:id="Menu_Bus" layoutX="10.0" layoutY="227.0" mnemonicParsing="false" onAction="#menu" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Bus">
                            <graphic>
                               <FontAwesomeIcon fill="#fffafa" glyphName="BUS" size="1.5em" />
                            </graphic>
                         </Button>
-                        <Button layoutX="9.0" layoutY="271.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Trajet">
+                        <Button fx:id="Menu_Trajet" layoutX="9.0" layoutY="271.0" mnemonicParsing="false" onAction="#menu" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Trajet">
                            <graphic>
                               <FontAwesomeIcon fill="#fffafa" glyphName="ROUTE" size="1.5em" />
                            </graphic>
                         </Button>
-                        <Button layoutX="10.0" layoutY="316.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Clients">
+                        <Button fx:id="Menu_Client" layoutX="10.0" layoutY="316.0" mnemonicParsing="false" onAction="#menu" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Clients">
                            <graphic>
                               <FontAwesomeIcon fill="#fffafa" glyphName="USERS" size="1.5em" />
                            </graphic>
                         </Button>
-                        <Button layoutX="7.0" layoutY="368.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Réservation">
+                        <Button fx:id="Menu_Reservation" layoutX="7.0" layoutY="368.0" mnemonicParsing="false" onAction="#menu" prefHeight="45.0" prefWidth="189.0" styleClass="nav-btn" stylesheets="@dashboard.css" text="Réservation">
                            <graphic>
                               <FontAwesomeIcon fill="#fffafa" glyphName="MONEY" size="1.5em" />
                            </graphic>
                         </Button>
-                        <Button fx:id="BtnDeconnexion" layoutX="31.0" layoutY="511.0" mnemonicParsing="false" stylesheets="@dashboard.css" AnchorPane.bottomAnchor="10.0">
+                        <Button fx:id="Btn_deconnexion" layoutX="31.0" layoutY="511.0" mnemonicParsing="false" onAction="#deconnexion" stylesheets="@dashboard.css" AnchorPane.bottomAnchor="10.0">
                            <graphic>
                               <FontAwesomeIcon fill="WHITE" glyphName="SIGN_OUT" size="2em" />
                            </graphic>

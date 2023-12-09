@@ -22,7 +22,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -36,6 +38,8 @@ public class LoginController implements Initializable {
     private Connection con;
     private PreparedStatement prepare;
     private ResultSet result;
+    private double x= 0; 
+    private double y= 0; 
     
        @FXML
     private Button btnConnexion;
@@ -74,15 +78,36 @@ public class LoginController implements Initializable {
                alert.setTitle("Information");
                alert.setHeaderText(null);
                alert.setContentText("Bienvenue !!");
-               
+               alert.showAndWait();
                // Cahcher le formulaire Login
                btnConnexion.getScene().getWindow().hide();
                // Affichage du Dashboard
                Parent root = FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
                Stage stage = new Stage();
                Scene scene = new Scene(root);
+               
+               // rendre le formulaire transparent
+               root.setOnMousePressed((MouseEvent event) -> {
+                x = event.getSceneX();
+                y = event.getSceneY();
+                });
+               
+               root.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - x);
+                stage.setY(event.getScreenY() - y);
+            
+            stage.setOpacity(.8);
+            });
+        
+            root.setOnMouseReleased((MouseEvent event) ->{
+            stage.setOpacity(1);
+             });
+        
+            stage.initStyle(StageStyle.TRANSPARENT);
+               
                stage.setScene(scene);
                stage.show();
+               
                }else{
                alert = new Alert(AlertType.ERROR);
                alert.setTitle("Erreur");
