@@ -203,7 +203,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Formulaire_Bus" layoutX="160.0" layoutY="174.0" prefHeight="655.0" prefWidth="961.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Bus" layoutX="160.0" layoutY="174.0" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="624.0" prefWidth="406.0" stylesheets="@dashboard.css">
                                  <styleClass>
@@ -244,13 +244,13 @@
                                           <TableColumn fx:id="bus_col_etat" prefWidth="101.0" text="Etat" />
                                       </columns>
                                     </TableView>
-                                    <TextField layoutX="66.0" layoutY="41.0" prefHeight="25.0" prefWidth="303.0" styleClass="search" stylesheets="@dashboard.css" />
+                                    <TextField fx:id="bus_search_txt" layoutX="66.0" layoutY="41.0" onAction="#rechercheBus" prefHeight="25.0" prefWidth="303.0" styleClass="search" stylesheets="@dashboard.css" />
                                     <FontAwesomeIcon glyphName="SEARCH" layoutX="45.0" layoutY="58.0" size="1.5em" />
                                  </children>
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Formulaire_Trajet" layoutX="195.0" layoutY="140.0" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Trajet" layoutX="195.0" layoutY="140.0" prefHeight="655.0" prefWidth="961.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="7.0" layoutY="16.0" prefHeight="609.0" prefWidth="460.0" stylesheets="@dashboard.css">
                                  <styleClass>

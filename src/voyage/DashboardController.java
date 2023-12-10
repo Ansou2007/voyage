@@ -36,6 +36,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.sql.Statement;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 
 /**
  * FXML Controller class
@@ -88,9 +90,9 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Button Menu_Trajet;
-    
+
     // Bus
-        @FXML
+    @FXML
     private TableColumn<Bus, String> bus_col_description;
 
     @FXML
@@ -101,7 +103,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private TableColumn<Bus, String> bus_col_place;
-    
+
     @FXML
     private TextArea bus_description_txt;
 
@@ -112,10 +114,11 @@ public class DashboardController implements Initializable {
     private TextField bus_matricule_txt;
     @FXML
     private TextField bus_nbre_place_txt;
-
+    @FXML
+    private TextField bus_search_txt;
     @FXML
     private Spinner<?> bus_place_txt;
-      @FXML
+    @FXML
     private TableView<Bus> bus_tableView;
     // Fin BUS
 
@@ -142,6 +145,7 @@ public class DashboardController implements Initializable {
             Formulaire_Reservation.setVisible(false);
             listeBusEtat();
             ListeBus();
+            rechercheBus();
 
             Menu_Bus.setStyle("-fx-background-color:linear-gradient(to bottom right, #25a473, #89892b)");
             Menu_Home.setStyle("-fx-background-color:linear-gradient(to bottom right, #25a473, #89892b)");
@@ -252,171 +256,175 @@ public class DashboardController implements Initializable {
     }
 
     //---------------------------BUS-------------------------
-    
-    
-    public void addBus()
-    {
-       String sql = "INSERT INTO bus(matricule,description,nbre_place,etat) VALUES(?,?,?,?)";
-       con = database.connexionDB();
-       try{
-           Alert alert;
-           if(bus_matricule_txt.getText().isEmpty()
-                   || bus_etat_txt.getSelectionModel().getSelectedItem() == null 
-                   || bus_nbre_place_txt.getText().isEmpty()){
-           alert = new Alert(AlertType.ERROR);
-           alert.setTitle("Erreur");
-           alert.setHeaderText(null);
-           alert.setContentText("Remplir les champs Obligatoire SVP");
-           alert.showAndWait();
-           
-           }else{
-           prepare = (PreparedStatement) con.prepareStatement(sql);
-           prepare.setString(1,bus_matricule_txt.getText());
-           prepare.setString(2,bus_description_txt.getText());
-           prepare.setString(3,bus_nbre_place_txt.getText());
-           prepare.setString(4,(String)bus_etat_txt.getSelectionModel().getSelectedItem());
-           
-           prepare.executeUpdate();
-           
-           AjoutBusList();
-           resetBus();
-           }
-           
-           
-       }catch(Exception e){e.printStackTrace();}
+    public void addBus() {
+        String sql = "INSERT INTO bus(matricule,description,nbre_place,etat) VALUES(?,?,?,?)";
+        con = database.connexionDB();
+        try {
+            Alert alert;
+            if (bus_matricule_txt.getText().isEmpty()
+                    || bus_etat_txt.getSelectionModel().getSelectedItem() == null
+                    || bus_nbre_place_txt.getText().isEmpty()) {
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Remplir les champs Obligatoire SVP");
+                alert.showAndWait();
+
+            } else {
+                prepare = (PreparedStatement) con.prepareStatement(sql);
+                prepare.setString(1, bus_matricule_txt.getText());
+                prepare.setString(2, bus_description_txt.getText());
+                prepare.setString(3, bus_nbre_place_txt.getText());
+                prepare.setString(4, (String) bus_etat_txt.getSelectionModel().getSelectedItem());
+
+                prepare.executeUpdate();
+
+                AjoutBusList();
+                resetBus();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
-    
-    public void resetBus()
-    {
+
+    public void resetBus() {
         bus_matricule_txt.setText("");
         bus_description_txt.setText("");
         bus_nbre_place_txt.setText("");
         bus_etat_txt.getSelectionModel().getSelectedItem();
     }
-    
+
     // Liste des Etat du Bus (fonctionnel ou en panne)
-    private String[] listEtat = {"fonctionnel","en panne"};
-    
-    public void listeBusEtat(){
+    private String[] listEtat = {"fonctionnel", "en panne"};
+
+    public void listeBusEtat() {
         List<String> listT = new ArrayList<>();
-        for(String data: listEtat){
+        for (String data : listEtat) {
             listT.add(data);
         }
         ObservableList listData = FXCollections.observableArrayList(listT);
         bus_etat_txt.setItems(listData);
     }
     private ObservableList<Bus> ajoutBusList;
-    
+
     // Ajout liste sur le tableau
     public void AjoutBusList() {
-        
+
         ajoutBusList = ListeBus();
         bus_col_matricule.setCellValueFactory(new PropertyValueFactory<>("matricule"));
         bus_col_description.setCellValueFactory(new PropertyValueFactory<>("description"));
         bus_col_place.setCellValueFactory(new PropertyValueFactory<>("nbre_place"));
-        bus_col_etat.setCellValueFactory(new PropertyValueFactory<>("etat"));        
-        bus_tableView.setItems(ajoutBusList);        
-        
+        bus_col_etat.setCellValueFactory(new PropertyValueFactory<>("etat"));
+        bus_tableView.setItems(ajoutBusList);
+
     }
+
     // Modifier Bus
-    public void updateBus(){
-    
-        String sql = "UPDATE bus SET description = '"+bus_description_txt.getText() +"',nbre_place = '"+bus_nbre_place_txt.getText()+"',etat = '"+bus_etat_txt.getSelectionModel().getSelectedItem()+"' WHERE matricule='"+bus_matricule_txt.getText()+"'";
-             
-       try{
-          con = database.connexionDB();
+    public void updateBus() {
+
+        String sql = "UPDATE bus SET description = '" + bus_description_txt.getText() + "',nbre_place = '" + bus_nbre_place_txt.getText() + "',etat = '" + bus_etat_txt.getSelectionModel().getSelectedItem() + "' WHERE matricule='" + bus_matricule_txt.getText() + "'";
+
+        try {
+            con = database.connexionDB();
             Alert alert;
-           if(bus_matricule_txt.getText().isEmpty()
-                   || bus_etat_txt.getSelectionModel().getSelectedItem() == null 
-                   || bus_nbre_place_txt.getText().isEmpty()){
-           alert = new Alert(AlertType.ERROR);
-           alert.setTitle("Erreur");
-           alert.setHeaderText(null);
-           alert.setContentText("Remplir les champs Obligatoire SVP");
-           alert.showAndWait();
-           
-           }else{
-               alert = new Alert(AlertType.CONFIRMATION);
-           alert.setTitle("Ok");
-           alert.setHeaderText(null);
-           alert.setContentText("Etes-vous sure de modifier");
-           alert.showAndWait();
-           
-           Optional<ButtonType> option = alert.showAndWait();
-           if(option.get().equals(ButtonType.OK)){
-           statement = con.createStatement();
-           statement.executeUpdate(sql);
-            alert = new Alert(AlertType.CONFIRMATION);
-           alert.setTitle("Ok");
-           alert.setHeaderText(null);
-           alert.setContentText("Modification avec succéss");
-           alert.showAndWait();
-           
-           AjoutBusList();
-           resetBus();
-           }
-           
-           }
-          
-       }catch(Exception e){e.printStackTrace();}
+            if (bus_matricule_txt.getText().isEmpty()
+                    || bus_etat_txt.getSelectionModel().getSelectedItem() == null
+                    || bus_nbre_place_txt.getText().isEmpty()) {
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Remplir les champs Obligatoire SVP");
+                alert.showAndWait();
+            } else {
+                alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setHeaderText(null);
+                alert.setContentText("Voulez-vous modifier ces informations");
+                //alert.showAndWait();  
+
+                Optional<ButtonType> option = alert.showAndWait();
+
+                if (option.get().equals(ButtonType.OK)) {
+                    statement = con.createStatement();
+                    statement.executeUpdate(sql);
+
+                    alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Modification avec succéss");
+                    alert.showAndWait();
+                    AjoutBusList();
+                    resetBus();
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
+
     // Suprimer BUS    
-    public void deleteBus(){
-    
-       String sql = "DELETE FROM bus WHERE matricule= '"+bus_matricule_txt.getText() +"'";
-             
-       try{
-          con = database.connexionDB();
+    public void deleteBus() {
+
+        String sql = "DELETE FROM bus WHERE matricule= '" + bus_matricule_txt.getText() + "'";
+
+        try {
+            con = database.connexionDB();
             Alert alert;
-           if(bus_matricule_txt.getText().isEmpty() || bus_nbre_place_txt.getText().isEmpty()){
-           alert = new Alert(AlertType.ERROR);
-           alert.setTitle("Erreur");
-           alert.setHeaderText(null);
-           alert.setContentText("Selectionner une ligne");
-           alert.showAndWait();
-           
-           }else{
-               alert = new Alert(AlertType.CONFIRMATION);
-           alert.setTitle("Ok");
-           alert.setHeaderText(null);
-           alert.setContentText("Etes-vous sure de supprimer");
-           alert.showAndWait();
-           
-           Optional<ButtonType> option = alert.showAndWait();
-           if(option.get().equals(ButtonType.OK)){
-           statement = con.createStatement();
-           statement.executeUpdate(sql);
-            alert = new Alert(AlertType.CONFIRMATION);
-           alert.setTitle("Ok");
-           alert.setHeaderText(null);
-           alert.setContentText("Suppression avec succéss");
-           alert.showAndWait();
-           
-           AjoutBusList();
-           resetBus();
-           }
-           
-           }
-          
-       }catch(Exception e){e.printStackTrace();}
+            if (bus_matricule_txt.getText().isEmpty() || bus_nbre_place_txt.getText().isEmpty()) {
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Selectionner une ligne");
+                alert.showAndWait();
+
+            } else {
+                alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Ok");
+                alert.setHeaderText(null);
+                alert.setContentText("Etes-vous sure de supprimer");
+                // alert.showAndWait();
+
+                Optional<ButtonType> option = alert.showAndWait();
+                if (option.get().equals(ButtonType.OK)) {
+
+                    statement = con.createStatement();
+                    statement.executeUpdate(sql);
+                    alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Ok");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Suppression avec succéss");
+                    alert.showAndWait();
+
+                    AjoutBusList();
+                    resetBus();
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
+
     // Selection des bus sur le tableau
-    public void BusSelection(){
-    Bus bus = bus_tableView.getSelectionModel().getSelectedItem();
-    int num = bus_tableView.getSelectionModel().getSelectedIndex();
-    
-    if((num - 1) < -1){return;}
-    bus_matricule_txt.setText(bus.getMatricule());
-    bus_description_txt.setText(bus.getDescription());
-    bus_nbre_place_txt.setText(String.valueOf(bus.getNbre_place()));
-   // bus_etat_txt.setText(bus.getEtat());
-    
-    
-    
+    public void BusSelection() {
+        Bus bus = bus_tableView.getSelectionModel().getSelectedItem();
+        int num = bus_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            return;
+        }
+        bus_matricule_txt.setText(bus.getMatricule());
+        bus_description_txt.setText(bus.getDescription());
+        bus_nbre_place_txt.setText(String.valueOf(bus.getNbre_place()));
+        // bus_etat_txt.setText(bus.getEtat());    
+
     }
+
     // Liste des Bus de la base de donnees
     public ObservableList<Bus> ListeBus() {
         ObservableList<Bus> busList = FXCollections.observableArrayList();
@@ -428,17 +436,46 @@ public class DashboardController implements Initializable {
             prepare = (PreparedStatement) con.prepareStatement(sql);
             result = prepare.executeQuery();
             Bus bus;
-            while(result.next()){
-            bus = new Bus(result.getString("matricule")
-                    ,result.getString("description")
-                    ,result.getInt("nbre_place")
-                    ,result.getString("etat"));
-            busList.add(bus);
+            while (result.next()) {
+                bus = new Bus(result.getString("matricule"),
+                         result.getString("description"),
+                         result.getInt("nbre_place"),
+                         result.getString("etat"));
+                busList.add(bus);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return busList;
+    }
+
+    // recherche Bus
+    public void rechercheBus() {
+        FilteredList<Bus> filter = new FilteredList<>(ajoutBusList, e -> true);
+        bus_search_txt.textProperty().addListener((Observable, oldValue, newValue) -> {
+            filter.setPredicate(predicateBus -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                //String searchKey = newValue.toLowerCase();
+                String searchKey = newValue;
+
+                if (predicateBus.getMatricule().toString().contains(searchKey)) {
+                    return true;
+                }else if(predicateBus.getEtat().toString().contains(searchKey)){
+                return true ;       
+                }else if(predicateBus.getDescription().toString().contains(searchKey)){
+                return true ;
+                }else return false; 
+                
+            });
+
+        });
+        
+        SortedList<Bus> sortList = new SortedList<>(filter);
+        sortList.comparatorProperty().bind(bus_tableView.comparatorProperty());
+        bus_tableView.setItems(sortList);
+
     }
     //---------------------------BUS-------------------------
 
