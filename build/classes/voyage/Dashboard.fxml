@@ -106,7 +106,7 @@
                <center>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane fx:id="Formulaire_Dashboard" layoutX="82.0" layoutY="78.0" prefHeight="655.0" prefWidth="960.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Dashboard" layoutX="82.0" layoutY="78.0" prefHeight="655.0" prefWidth="960.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="287.0" prefWidth="864.0" styleClass="shadow" stylesheets="@dashboard.css" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="22.0">
                                  <children>
@@ -203,7 +203,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Formulaire_Bus" layoutX="160.0" layoutY="174.0" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Bus" layoutX="160.0" layoutY="174.0" prefHeight="655.0" prefWidth="961.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="624.0" prefWidth="406.0" stylesheets="@dashboard.css">
                                  <styleClass>
@@ -217,17 +217,17 @@
                                           <Font name="System Bold" size="23.0" />
                                        </font>
                                     </Label>
-                                    <TextField layoutX="119.0" layoutY="95.0" prefHeight="25.0" prefWidth="191.0" />
+                                    <TextField fx:id="bus_matricule_txt" layoutX="119.0" layoutY="95.0" prefHeight="25.0" prefWidth="191.0" styleClass="textfield" />
                                     <Label layoutX="40.0" layoutY="169.0" text="Description" />
-                                    <TextArea layoutX="119.0" layoutY="138.0" prefHeight="78.0" prefWidth="192.0" />
-                                    <Label layoutX="44.0" layoutY="265.0" text="Place" />
-                                    <ComboBox layoutX="117.0" layoutY="312.0" prefHeight="25.0" prefWidth="199.0" />
-                                    <Label layoutX="40.0" layoutY="316.0" text="Etat" />
-                                    <Button layoutX="47.0" layoutY="383.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="108.0" text="Ajouter" />
-                                    <Button layoutX="179.0" layoutY="383.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="108.0" text="Modifier" />
-                                    <Button layoutX="49.0" layoutY="444.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="108.0" text="Reset" />
-                                    <Button layoutX="179.0" layoutY="444.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="108.0" text="Supprimer" />
-                                    <Spinner layoutX="117.0" layoutY="261.0" prefHeight="25.0" prefWidth="195.0" />
+                                    <TextArea fx:id="bus_description_txt" layoutX="119.0" layoutY="138.0" prefHeight="78.0" prefWidth="192.0" styleClass="textfield" />
+                                    <Label layoutX="44.0" layoutY="231.0" text="Place" />
+                                    <ComboBox fx:id="bus_etat_txt" layoutX="117.0" layoutY="282.0" onAction="#listeBusEtat" prefHeight="25.0" prefWidth="199.0" />
+                                    <Label layoutX="40.0" layoutY="286.0" text="Etat" />
+                                    <Button layoutX="47.0" layoutY="383.0" mnemonicParsing="false" onAction="#addBus" prefHeight="41.0" prefWidth="108.0" styleClass="add-btn" stylesheets="@dashboard.css" text="Ajouter" />
+                                    <Button layoutX="179.0" layoutY="383.0" mnemonicParsing="false" onAction="#updateBus" prefHeight="41.0" prefWidth="108.0" styleClass="update-btn" stylesheets="@dashboard.css" text="Modifier" />
+                                    <Button layoutX="49.0" layoutY="444.0" mnemonicParsing="false" onAction="#resetBus" prefHeight="41.0" prefWidth="108.0" styleClass="reset-btn" stylesheets="@dashboard.css" text="Reset" />
+                                    <Button layoutX="179.0" layoutY="444.0" mnemonicParsing="false" onAction="#deleteBus" prefHeight="41.0" prefWidth="108.0" styleClass="delete-btn" stylesheets="@dashboard.css" text="Supprimer" />
+                                    <TextField fx:id="bus_nbre_place_txt" layoutX="117.0" layoutY="230.0" prefHeight="25.0" prefWidth="195.0" styleClass="textfield" />
                                  </children>
                               </AnchorPane>
                               <AnchorPane layoutX="439.0" layoutY="12.0" prefHeight="624.0" prefWidth="497.0" stylesheets="@dashboard.css">
@@ -236,15 +236,15 @@
                                     <String fx:value="shadow" />
                                  </styleClass>
                                  <children>
-                                    <TableView layoutX="13.0" layoutY="87.0" prefHeight="494.0" prefWidth="475.0">
+                                    <TableView fx:id="bus_tableView" layoutX="13.0" layoutY="87.0" onMouseClicked="#BusSelection" prefHeight="494.0" prefWidth="475.0">
                                       <columns>
-                                        <TableColumn prefWidth="98.0" text="Matricule" />
-                                        <TableColumn prefWidth="186.0" text="Description" />
-                                          <TableColumn prefWidth="89.0" text="Place" />
-                                          <TableColumn prefWidth="101.0" text="Etat" />
+                                        <TableColumn fx:id="bus_col_matricule" prefWidth="98.0" text="Matricule" />
+                                        <TableColumn fx:id="bus_col_description" prefWidth="186.0" text="Description" />
+                                          <TableColumn fx:id="bus_col_place" prefWidth="89.0" text="Place" />
+                                          <TableColumn fx:id="bus_col_etat" prefWidth="101.0" text="Etat" />
                                       </columns>
                                     </TableView>
-                                    <TextField layoutX="66.0" layoutY="41.0" prefHeight="25.0" prefWidth="303.0" />
+                                    <TextField layoutX="66.0" layoutY="41.0" prefHeight="25.0" prefWidth="303.0" styleClass="search" stylesheets="@dashboard.css" />
                                     <FontAwesomeIcon glyphName="SEARCH" layoutX="45.0" layoutY="58.0" size="1.5em" />
                                  </children>
                               </AnchorPane>
@@ -290,10 +290,10 @@
                                     <DatePicker layoutX="147.0" layoutY="261.0" />
                                     <TextField layoutX="148.0" layoutY="315.0" prefHeight="25.0" prefWidth="187.0" />
                                     <Label layoutX="78.0" layoutY="318.0" text="Heure" />
-                                    <Button layoutX="68.0" layoutY="389.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" text="Ajouter" />
-                                    <Button layoutX="213.0" layoutY="389.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" text="Modifier" />
-                                    <Button layoutX="70.0" layoutY="456.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" text="Reset" />
-                                    <Button layoutX="215.0" layoutY="456.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" text="Supprimer" />
+                                    <Button layoutX="68.0" layoutY="389.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="add-btn" text="Ajouter" />
+                                    <Button layoutX="213.0" layoutY="389.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="update-btn" text="Modifier" />
+                                    <Button layoutX="70.0" layoutY="456.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="reset-btn" text="Reset" />
+                                    <Button layoutX="215.0" layoutY="456.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="delete-btn" text="Supprimer" />
                                  </children>
                               </AnchorPane>
                            </children>
@@ -319,10 +319,10 @@
                                     <TextField layoutX="109.0" layoutY="211.0" />
                                     <Label layoutX="26.0" layoutY="257.0" text="Cin" />
                                     <TextField layoutX="109.0" layoutY="253.0" />
-                                    <Button layoutX="26.0" layoutY="366.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" text="Ajouter" />
-                                    <Button layoutX="147.0" layoutY="366.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" text="Modifier" />
-                                    <Button layoutX="26.0" layoutY="426.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" text="Reset" />
-                                    <Button layoutX="147.0" layoutY="426.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" text="Supprimer" />
+                                    <Button layoutX="26.0" layoutY="366.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="add-btn" text="Ajouter" />
+                                    <Button layoutX="147.0" layoutY="366.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="update-btn" text="Modifier" />
+                                    <Button layoutX="26.0" layoutY="426.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="reset-btn" text="Reset" />
+                                    <Button layoutX="147.0" layoutY="426.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="delete-btn" text="Supprimer" />
                                  </children>
                               </AnchorPane>
                               <AnchorPane layoutX="392.0" layoutY="15.0" prefHeight="625.0" prefWidth="487.0" stylesheets="@dashboard.css">
@@ -339,7 +339,7 @@
                                           <TableColumn minWidth="2.0" prefWidth="103.0" text="Cin" />
                                       </columns>
                                     </TableView>
-                                    <TextField layoutX="74.0" layoutY="39.0" prefHeight="25.0" prefWidth="301.0" promptText="Rechercher" />
+                                    <TextField layoutX="74.0" layoutY="39.0" prefHeight="25.0" prefWidth="301.0" promptText="Rechercher" styleClass="search" />
                                     <FontAwesomeIcon glyphName="SEARCH" layoutX="46.0" layoutY="56.0" size="1.5em" />
                                  </children>
                               </AnchorPane>
@@ -348,10 +348,6 @@
                         <AnchorPane fx:id="Formulaire_Reservation" layoutX="220.0" layoutY="108.0" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="628.0" prefWidth="353.0" stylesheets="@dashboard.css">
-                                 <styleClass>
-                                    <String fx:value="white-bg" />
-                                    <String fx:value="shadow" />
-                                 </styleClass>
                                  <children>
                                     <Label layoutX="51.0" layoutY="22.0" text="Formulaire Reservation">
                                        <font>
@@ -359,21 +355,25 @@
                                        </font>
                                     </Label>
                                     <Label layoutX="36.0" layoutY="96.0" text="Client" />
-                                    <ComboBox layoutX="102.0" layoutY="90.0" prefWidth="150.0" promptText="Client" />
+                                    <ComboBox layoutX="102.0" layoutY="90.0" prefWidth="150.0" promptText="Client" stylesheets="@dashboard.css" />
                                     <Label layoutX="36.0" layoutY="143.0" text="Trajet" />
-                                    <ComboBox layoutX="102.0" layoutY="137.0" prefWidth="150.0" promptText="Trajet" />
+                                    <ComboBox layoutX="102.0" layoutY="137.0" prefWidth="150.0" promptText="Trajet" styleClass="textfield" stylesheets="@dashboard.css" />
                                     <Label layoutX="7.0" layoutY="197.0" text="Mode Paiement" />
-                                    <ComboBox layoutX="102.0" layoutY="191.0" prefWidth="150.0" promptText="Mode" />
+                                    <ComboBox layoutX="102.0" layoutY="191.0" prefWidth="150.0" promptText="Mode" styleClass="textfield" stylesheets="@dashboard.css" />
                                     <Label layoutX="21.0" layoutY="253.0" text="Siege" />
                                     <Label layoutX="21.0" layoutY="306.0" text="Montant" />
-                                    <TextField layoutX="101.0" layoutY="302.0" prefHeight="25.0" prefWidth="153.0" promptText="Montant" />
-                                    <Spinner layoutX="102.0" layoutY="254.0" prefHeight="25.0" prefWidth="152.0" />
-                                    <Button layoutX="36.0" layoutY="392.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" text="Ajouter" />
-                                    <Button layoutX="157.0" layoutY="392.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" text="Modifier" />
-                                    <Button layoutX="37.0" layoutY="458.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" text="Reset" />
-                                    <Button layoutX="158.0" layoutY="458.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" text="Supprimer" />
-                                    <Button layoutX="36.0" layoutY="519.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="222.0" text="Imprimer Ticket" />
+                                    <TextField layoutX="101.0" layoutY="302.0" prefHeight="25.0" prefWidth="153.0" promptText="Montant" styleClass="textfield" stylesheets="@dashboard.css" />
+                                    <Spinner layoutX="102.0" layoutY="254.0" prefHeight="25.0" prefWidth="152.0" styleClass="textfield" stylesheets="@dashboard.css" />
+                                    <Button layoutX="36.0" layoutY="392.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" styleClass="add-btn" text="Ajouter" />
+                                    <Button layoutX="157.0" layoutY="392.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" styleClass="update-btn" text="Modifier" />
+                                    <Button layoutX="37.0" layoutY="458.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" styleClass="reset-btn" text="Reset" />
+                                    <Button layoutX="158.0" layoutY="458.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" styleClass="delete-btn" text="Supprimer" />
+                                    <Button layoutX="36.0" layoutY="519.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="222.0" styleClass="print-btn" stylesheets="@dashboard.css" text="Imprimer Ticket" />
                                  </children>
+                                 <styleClass>
+                                    <String fx:value="shadow" />
+                                    <String fx:value="white-bg" />
+                                 </styleClass>
                               </AnchorPane>
                               <AnchorPane layoutX="391.0" layoutY="14.0" prefHeight="628.0" prefWidth="563.0" stylesheets="@dashboard.css">
                                  <styleClass>
