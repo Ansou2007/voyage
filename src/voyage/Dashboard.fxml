@@ -106,7 +106,7 @@
                <center>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane fx:id="Formulaire_Dashboard" layoutX="82.0" layoutY="78.0" prefHeight="655.0" prefWidth="960.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Dashboard" layoutX="82.0" layoutY="78.0" prefHeight="655.0" prefWidth="960.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="287.0" prefWidth="864.0" styleClass="shadow" stylesheets="@dashboard.css" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="22.0">
                                  <children>
@@ -250,7 +250,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Formulaire_Trajet" layoutX="195.0" layoutY="140.0" prefHeight="655.0" prefWidth="961.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Trajet" layoutX="195.0" layoutY="140.0" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="7.0" layoutY="16.0" prefHeight="609.0" prefWidth="460.0" stylesheets="@dashboard.css">
                                  <styleClass>
@@ -312,34 +312,36 @@
                                        </font>
                                     </Label>
                                     <Label layoutX="26.0" layoutY="119.0" text="Prénom" />
-                                    <TextField layoutX="109.0" layoutY="115.0" />
+                                    <TextField fx:id="client_prenom_txt" layoutX="109.0" layoutY="115.0" />
                                     <Label layoutX="26.0" layoutY="168.0" text="Nom" />
-                                    <TextField layoutX="109.0" layoutY="164.0" />
+                                    <TextField fx:id="client_nom_txt" layoutX="109.0" layoutY="164.0" />
                                     <Label layoutX="26.0" layoutY="215.0" text="Télephone" />
-                                    <TextField layoutX="109.0" layoutY="211.0" />
+                                    <TextField fx:id="client_telephone_txt" layoutX="109.0" layoutY="211.0" />
                                     <Label layoutX="26.0" layoutY="257.0" text="Cin" />
-                                    <TextField layoutX="109.0" layoutY="253.0" />
-                                    <Button layoutX="26.0" layoutY="366.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="add-btn" text="Ajouter" />
-                                    <Button layoutX="147.0" layoutY="366.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="update-btn" text="Modifier" />
-                                    <Button layoutX="26.0" layoutY="426.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="reset-btn" text="Reset" />
-                                    <Button layoutX="147.0" layoutY="426.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="97.0" styleClass="delete-btn" text="Supprimer" />
+                                    <TextField fx:id="client_cin_txt" layoutX="109.0" layoutY="253.0" />
+                                    <Button layoutX="26.0" layoutY="366.0" mnemonicParsing="false" onAction="#addClient" prefHeight="41.0" prefWidth="97.0" styleClass="add-btn" text="Ajouter" />
+                                    <Button layoutX="147.0" layoutY="366.0" mnemonicParsing="false" onAction="#updateClient" prefHeight="41.0" prefWidth="97.0" styleClass="update-btn" text="Modifier" />
+                                    <Button layoutX="26.0" layoutY="426.0" mnemonicParsing="false" onAction="#resetClient" prefHeight="41.0" prefWidth="97.0" styleClass="reset-btn" text="Reset" />
+                                    <Button layoutX="147.0" layoutY="426.0" mnemonicParsing="false" onAction="#deleteClient" prefHeight="41.0" prefWidth="97.0" styleClass="delete-btn" text="Supprimer" />
+                                    <TextField fx:id="client_id_txt" layoutX="109.0" layoutY="75.0" visible="false" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane layoutX="392.0" layoutY="15.0" prefHeight="625.0" prefWidth="487.0" stylesheets="@dashboard.css">
+                              <AnchorPane layoutX="392.0" layoutY="15.0" prefHeight="625.0" prefWidth="551.0" stylesheets="@dashboard.css">
                                  <styleClass>
                                     <String fx:value="white-bg" />
                                     <String fx:value="shadow" />
                                  </styleClass>
                                  <children>
-                                    <TableView layoutX="12.0" layoutY="80.0" prefHeight="200.0" prefWidth="447.0">
+                                    <TableView fx:id="client_tableView" layoutX="12.0" layoutY="80.0" onMouseClicked="#ClientSelection" prefHeight="200.0" prefWidth="546.0">
                                       <columns>
-                                        <TableColumn prefWidth="130.0" text="Prénom" />
-                                        <TableColumn prefWidth="108.0" text="Nom" />
-                                          <TableColumn prefWidth="105.0" text="Telephone" />
-                                          <TableColumn minWidth="2.0" prefWidth="103.0" text="Cin" />
+                                        <TableColumn fx:id="client_col_id" prefWidth="55.0" text="Id" />
+                                        <TableColumn fx:id="client_col_prenom" prefWidth="127.0" text="Prénom" />
+                                          <TableColumn fx:id="client_col_nom" prefWidth="106.0" text="Nom" />
+                                          <TableColumn fx:id="client_col_cin" minWidth="2.0" prefWidth="97.0" text="Cin" />
+                                          <TableColumn fx:id="client_col_telephone" prefWidth="191.0" text="Téléphone" />
                                       </columns>
                                     </TableView>
-                                    <TextField layoutX="74.0" layoutY="39.0" prefHeight="25.0" prefWidth="301.0" promptText="Rechercher" styleClass="search" />
+                                    <TextField fx:id="client_search_txt" layoutX="74.0" layoutY="39.0" onAction="#rechercheClient" prefHeight="25.0" prefWidth="301.0" promptText="Rechercher" styleClass="search" />
                                     <FontAwesomeIcon glyphName="SEARCH" layoutX="46.0" layoutY="56.0" size="1.5em" />
                                  </children>
                               </AnchorPane>
