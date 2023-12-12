@@ -8,7 +8,6 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
@@ -252,24 +251,25 @@
                         </AnchorPane>
                         <AnchorPane fx:id="Formulaire_Trajet" layoutX="195.0" layoutY="140.0" prefHeight="655.0" prefWidth="961.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <AnchorPane layoutX="7.0" layoutY="16.0" prefHeight="609.0" prefWidth="460.0" stylesheets="@dashboard.css">
+                              <AnchorPane layoutX="7.0" layoutY="16.0" prefHeight="609.0" prefWidth="496.0" stylesheets="@dashboard.css">
                                  <styleClass>
                                     <String fx:value="white-bg" />
                                     <String fx:value="shadow" />
                                  </styleClass>
                                  <children>
-                                    <TableView layoutX="15.0" layoutY="27.0" prefHeight="582.0" prefWidth="396.0">
+                                    <TableView fx:id="trajet_tableView" layoutX="15.0" layoutY="113.0" onMouseClicked="#TrajetSelection" prefHeight="496.0" prefWidth="479.0">
                                       <columns>
-                                        <TableColumn prefWidth="75.0" text="Bus" />
-                                        <TableColumn prefWidth="78.0" text=" Depart" />
-                                          <TableColumn prefWidth="94.0" text="Arrivée" />
-                                          <TableColumn prefWidth="54.0" text="Heure" />
-                                          <TableColumn prefWidth="92.0" text="Date" />
+                                        <TableColumn fx:id="trajet_col_id" prefWidth="40.0" text="Id" />
+                                        <TableColumn fx:id="trajet_col_bus" prefWidth="113.0" text="Bus" />
+                                          <TableColumn fx:id="trajet_col_code" prefWidth="139.0" text="Code" />
+                                          <TableColumn fx:id="trajet_col_depart" prefWidth="99.0" text="Départ" />
+                                          <TableColumn fx:id="trajet_col_arrivee" prefWidth="82.0" text="Arrivée" />
                                       </columns>
                                     </TableView>
+                                    <TextField fx:id="trajet_search_txt" layoutX="54.0" layoutY="61.0" onAction="#rechercheTrajet" prefHeight="25.0" prefWidth="364.0" promptText="Rechercher" styleClass="search" stylesheets="@dashboard.css" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="trajet_bus_id_txt" layoutX="477.0" layoutY="16.0" prefHeight="609.0" prefWidth="458.0" stylesheets="@dashboard.css">
+                              <AnchorPane layoutX="516.0" layoutY="16.0" prefHeight="609.0" prefWidth="419.0" stylesheets="@dashboard.css">
                                  <styleClass>
                                     <String fx:value="white-bg" />
                                     <String fx:value="shadow" />
@@ -283,18 +283,14 @@
                                     <Label layoutX="91.0" layoutY="97.0" text="Bus" />
                                     <ComboBox fx:id="trajet_bus_txt" layoutX="145.0" layoutY="93.0" onAction="#list_bus_trajet" prefHeight="25.0" prefWidth="181.0" />
                                     <Label layoutX="70.0" layoutY="150.0" text="Ville Départ" />
-                                    <TextField layoutX="146.0" layoutY="144.0" prefHeight="25.0" prefWidth="183.0" />
+                                    <TextField fx:id="trajet_dpt_txt" layoutX="146.0" layoutY="144.0" prefHeight="25.0" prefWidth="183.0" />
                                     <Label layoutX="72.0" layoutY="210.0" text="Ville Arrivée" />
-                                    <TextField layoutX="148.0" layoutY="204.0" prefHeight="25.0" prefWidth="184.0" />
-                                    <Label layoutX="75.0" layoutY="265.0" text="Date" />
-                                    <DatePicker layoutX="147.0" layoutY="261.0" />
-                                    <TextField layoutX="148.0" layoutY="315.0" prefHeight="25.0" prefWidth="187.0" />
-                                    <Label layoutX="78.0" layoutY="318.0" text="Heure" />
-                                    <Button layoutX="68.0" layoutY="389.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="add-btn" text="Ajouter" />
+                                    <TextField fx:id="trajet_a_txt" layoutX="148.0" layoutY="204.0" prefHeight="25.0" prefWidth="184.0" />
+                                    <Button layoutX="68.0" layoutY="389.0" mnemonicParsing="false" onAction="#addTrajet" prefHeight="45.0" prefWidth="131.0" styleClass="add-btn" text="Ajouter" />
                                     <Button layoutX="213.0" layoutY="389.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="update-btn" text="Modifier" />
-                                    <Button layoutX="70.0" layoutY="456.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="reset-btn" text="Reset" />
-                                    <Button layoutX="215.0" layoutY="456.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="131.0" styleClass="delete-btn" text="Supprimer" />
-                                    <TextField fx:id="bus_id_txt" layoutX="149.0" layoutY="57.0" />
+                                    <Button layoutX="70.0" layoutY="456.0" mnemonicParsing="false" onAction="#resetTrajet" prefHeight="45.0" prefWidth="131.0" styleClass="reset-btn" text="Reset" />
+                                    <Button layoutX="215.0" layoutY="456.0" mnemonicParsing="false" onAction="#deleteTrajet" prefHeight="45.0" prefWidth="131.0" styleClass="delete-btn" text="Supprimer" />
+                                    <TextField fx:id="trajet_id_txt" layoutX="164.0" layoutY="61.0" visible="false" />
                                  </children>
                               </AnchorPane>
                            </children>

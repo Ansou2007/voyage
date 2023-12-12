@@ -167,9 +167,36 @@ public class DashboardController implements Initializable {
     //---------------TRAJET--------------//
      @FXML
    // private ComboBox<?> trajet_bus_txt;
-    private ComboBox<Trajet> trajet_bus_txt;
+    private ComboBox<?> trajet_bus_txt;
       @FXML
-    private TextField bus_id_txt;
+    private TextField trajet_id_txt;
+      
+       @FXML
+    private TextField trajet_dpt_txt;
+       
+       @FXML
+    private TextField trajet_a_txt;
+       
+       @FXML
+    private TextField trajet_search_txt;
+
+    @FXML
+    private TableColumn<Trajet, String> trajet_col_arrivee;
+
+    @FXML
+    private TableColumn<Trajet, String> trajet_col_bus;
+
+    @FXML
+    private TableColumn<Trajet, String> trajet_col_code;
+
+    @FXML
+    private TableColumn<Trajet, String> trajet_col_depart;
+
+    @FXML
+    private TableColumn<Trajet, Integer> trajet_col_id;
+
+    @FXML
+    private TableView<Trajet> trajet_tableView;
    
     //---------------FIN TRAJET--------------//
 
@@ -220,6 +247,8 @@ public class DashboardController implements Initializable {
             Menu_Client.setStyle("-fx-background-color:transparent");
             Menu_Reservation.setStyle("-fx-background-color:transparent");
             list_bus_trajet();
+            ListeTrajet();
+            rechercheTrajet();
 
         } else if (event.getSource() == Menu_Client) {
             Formulaire_Dashboard.setVisible(false);
@@ -228,7 +257,6 @@ public class DashboardController implements Initializable {
             Formulaire_Client.setVisible(true);
             Formulaire_Reservation.setVisible(false);
             ListeClient();
-            rechercheClient();
             rechercheClient();
 
             Menu_Client.setStyle("-fx-background-color:linear-gradient(to bottom right, #25a473, #89892b)");
@@ -778,13 +806,230 @@ public class DashboardController implements Initializable {
     
     }
    
+    // Ajout Trajet
+     public void addTrajet() {
+        String sql = "INSERT INTO trajet(bus_name,code_trajet,ville_depart,ville_arrivee) VALUES(?,?,?,?)";
+        con = database.connexionDB();
+        try {
+            Alert alert;
+            if (trajet_bus_txt.getSelectionModel().getSelectedItem() == null
+                    || trajet_dpt_txt.getText().isEmpty()
+                    || trajet_a_txt.getText().isEmpty()) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Remplir les champs Obligatoire SVP");
+                alert.showAndWait();
+
+            } else {
+                prepare = (PreparedStatement) con.prepareStatement(sql);
+                prepare.setString(1, (String) trajet_bus_txt.getSelectionModel().getSelectedItem()); 
+                prepare.setString(2, trajet_dpt_txt.getText()+" A "+trajet_a_txt.getText());
+                prepare.setString(3, trajet_dpt_txt.getText());
+                prepare.setString(4, trajet_a_txt.getText());               
+                prepare.executeUpdate();
+                AjoutTrajetList();
+                resetTrajet();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+     
+       private ObservableList<Trajet> ajoutTrajetList;
+
+    // Ajout liste sur le tableau
+    public void AjoutTrajetList() {
+
+        ajoutTrajetList = ListeTrajet();
+        trajet_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        trajet_col_bus.setCellValueFactory(new PropertyValueFactory<>("bus_name"));
+        trajet_col_code.setCellValueFactory(new PropertyValueFactory<>("code_trajet"));
+        trajet_col_depart.setCellValueFactory(new PropertyValueFactory<>("ville_depart"));
+        trajet_col_arrivee.setCellValueFactory(new PropertyValueFactory<>("ville_arrivee"));        
+        trajet_tableView.setItems(ajoutTrajetList);
+
+    }
     
-     //--------------FIN TRAJET------------
+     // Liste des trajets de la base de donnees
+    public ObservableList<Trajet> ListeTrajet() {
+        ObservableList<Trajet> trajetList = FXCollections.observableArrayList();
+
+        String sql = "SELECT id,bus_name,code_trajet,ville_depart,ville_arrivee FROM trajet";
+        con = database.connexionDB();
+
+        try {
+            prepare = (PreparedStatement) con.prepareStatement(sql);
+            result = prepare.executeQuery();
+            Trajet trajet;
+            while (result.next()) {
+                trajet = new Trajet(result.getInt("id"),
+                         result.getString("bus_name"),
+                         result.getString("code_trajet"),
+                         result.getString("ville_depart"),
+                         result.getString("ville_arrivee"));
+                         
+                trajetList.add(trajet);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return trajetList;
+    }
+    
+      // Reset Champ
+    public void resetTrajet() {
+        trajet_id_txt.setText("");
+        trajet_bus_txt.getSelectionModel().getSelectedItem();
+        trajet_dpt_txt.setText("");
+        trajet_a_txt.setText("");
+       
+      
+    }
+    
+     // Modifier Trajet
+    public void updateTrajet() {
+
+        String sql = "UPDATE trajet SET bus_name = '" + trajet_bus_txt.getSelectionModel().getSelectedItem() + "',ville_depart = '" + trajet_dpt_txt.getText() + "',cin = '" + trajet_a_txt.getText() + "' WHERE id='" + trajet_id_txt.getText() + "'";
+
+        try {
+            con = database.connexionDB();
+            Alert alert;
+            if (trajet_bus_txt.getSelectionModel().getSelectedItem() == null
+                    || trajet_dpt_txt.getText().isEmpty()
+                    || trajet_a_txt.getText().isEmpty()
+                    || trajet_id_txt.getText().isEmpty()) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Remplir les champs Obligatoire SVP");
+                alert.showAndWait();
+            } else {
+                alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setHeaderText(null);
+                alert.setContentText("Voulez-vous modifier ces informations");
+                //alert.showAndWait();  
+
+                Optional<ButtonType> option = alert.showAndWait();
+
+                if (option.get().equals(ButtonType.OK)) {
+                    statement = con.createStatement();
+                    statement.executeUpdate(sql);
+
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Modification avec succéss");
+                    alert.showAndWait();
+                    AjoutClientList();
+                    resetClient();
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // Suprimer Trajet    
+    public void deleteTrajet() {
+
+        String sql = "DELETE FROM trajet WHERE id= '" + trajet_id_txt.getText() + "'";
+
+        try {
+            con = database.connexionDB();
+            Alert alert;
+            if (trajet_dpt_txt.getText().isEmpty() || trajet_a_txt.getText().isEmpty()) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Selectionner une ligne");
+                alert.showAndWait();
+
+            } else {
+                alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Ok");
+                alert.setHeaderText(null);
+                alert.setContentText("Etes-vous sure de supprimer");
+                // alert.showAndWait();
+
+                Optional<ButtonType> option = alert.showAndWait();
+                if (option.get().equals(ButtonType.OK)) {
+
+                    statement = con.createStatement();
+                    statement.executeUpdate(sql);
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Ok");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Suppression avec succéss");
+                    alert.showAndWait();
+
+                    AjoutTrajetList();
+                    resetTrajet();
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+     // Selection des trajets sur le tableau
+    public void TrajetSelection() {
+        Trajet trajet = trajet_tableView.getSelectionModel().getSelectedItem();
+        int num = trajet_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            return;
+        }
+        trajet_id_txt.setText(String.valueOf(trajet.getId()));
+        trajet_dpt_txt.setText(trajet.getVille_depart());
+        trajet_a_txt.setText(trajet.getVille_arrivee());
+      
+    }
+    
+    // recherche Trajet
+    public void rechercheTrajet() {
+        FilteredList<Trajet> filter = new FilteredList<>(ajoutTrajetList, e -> true);
+        trajet_search_txt.textProperty().addListener((Observable, oldValue, newValue) -> {
+            filter.setPredicate(predicateTrajet -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                //String searchKey = newValue.toLowerCase();
+                String searchKey = newValue;
+
+                if (predicateTrajet.getBus_name().toString().contains(searchKey)) {
+                    return true;
+                }else if(predicateTrajet.getCode_trajet().toString().contains(searchKey)){
+                return true ;       
+                }else if(predicateTrajet.getVille_arrivee().toString().contains(searchKey)){
+                return true ;
+                }else return false; 
+                
+            });
+
+        });
+        
+        SortedList<Trajet> sortList = new SortedList<>(filter);
+        sortList.comparatorProperty().bind(trajet_tableView.comparatorProperty());
+        trajet_tableView.setItems(sortList);
+
+    }
+
+     /////-----------------------FIN TRAJET------------///
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         AjoutBusList();
         AjoutClientList();
+        AjoutTrajetList();
         listeBusEtat();
         list_bus_trajet();
      
