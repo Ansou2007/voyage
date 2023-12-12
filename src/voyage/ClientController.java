@@ -115,9 +115,10 @@ public class ClientController implements Initializable {
     }
 
 
-    private ObservableList<Client> ajoutClientList;
+   
 
     // Ajout liste sur le tableau
+     private ObservableList<Client> ajoutClientList;
     public void AjoutClientList() {
 
         ajoutClientList = ListeClient();

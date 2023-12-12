@@ -163,6 +163,15 @@ public class DashboardController implements Initializable {
     @FXML
     private TextField client_telephone_txt;
     //---------------FIN CLIENT--------------//
+    
+    //---------------TRAJET--------------//
+     @FXML
+   // private ComboBox<?> trajet_bus_txt;
+    private ComboBox<Trajet> trajet_bus_txt;
+      @FXML
+    private TextField bus_id_txt;
+   
+    //---------------FIN TRAJET--------------//
 
     // Changement Formulaire
     public void menu(ActionEvent event) {
@@ -210,6 +219,7 @@ public class DashboardController implements Initializable {
             Menu_Bus.setStyle("-fx-background-color:transparent");
             Menu_Client.setStyle("-fx-background-color:transparent");
             Menu_Reservation.setStyle("-fx-background-color:transparent");
+            list_bus_trajet();
 
         } else if (event.getSource() == Menu_Client) {
             Formulaire_Dashboard.setVisible(false);
@@ -743,12 +753,41 @@ public class DashboardController implements Initializable {
     }
 
      //--------------FIN CLIENTS------------
+    
+     //--------------TRAJET----------------------//
+    
+    // Liste des Bus sur  la table Trajet   
+    public void list_bus_trajet(){
+    
+    String sql = "SELECT id,matricule FROM bus ORDER BY matricule ASC ";
+    con = database.connexionDB();
+    try{
+        prepare = (PreparedStatement) con.prepareStatement(sql);
+        result = prepare.executeQuery();
+        //ObservableList listData = FXCollections.observableArrayList();
+        ObservableList listData = FXCollections.observableArrayList();
+        
+        while(result.next()){
+            //listData.add(result.getString("id"));
+            listData.add(result.getString("matricule"));
+        }
+        trajet_bus_txt.setItems(listData);
+        //bus_id_txt.setItems(listData);
+        //System.out.println(listData);
+    }catch(Exception e){e.printStackTrace();}
+    
+    }
+   
+    
+     //--------------FIN TRAJET------------
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         AjoutBusList();
         AjoutClientList();
         listeBusEtat();
+        list_bus_trajet();
+     
         
         
         
