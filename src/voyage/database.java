@@ -33,7 +33,7 @@ public class database {
         try{
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:8889/micda_voyage","admin","admin");
-            System.out.println("Connexion reussi");
+           // System.out.println("Connexion reussi");
             return con;
         }catch(ClassNotFoundException | SQLException e){
             System.out.println("Connexion echouée");

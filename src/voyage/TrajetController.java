@@ -33,7 +33,6 @@ public class TrajetController implements Initializable {
     private Statement statement;
     
    
-        
   
 
     @Override
