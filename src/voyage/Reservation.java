@@ -21,12 +21,13 @@ public class Reservation {
     private String code_paiement;
     private Integer montant;
     
-    public Reservation(Integer id,String nom_client,String nom_trajet,Date date_depart,String heure_depart,Integer numero_siege,String mode_paiement,String code_paiement,Integer montant ){
+    public Reservation(Integer id,String nom_client,String nom_trajet,String mode_paiement,String code_paiement,Integer numero_siege,Integer montant,Date date_depart,String heure_depart ){
     
         this.id = id;
         this.nom_client = nom_client;
         this.nom_trajet = nom_trajet;
         this.date_depart = date_depart;
+        this.heure_depart = heure_depart;
         this.numero_siege = numero_siege;
         this.mode_paiement = mode_paiement;
         this.code_paiement = code_paiement;

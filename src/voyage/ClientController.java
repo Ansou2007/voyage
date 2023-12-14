@@ -104,6 +104,7 @@ public class ClientController implements Initializable {
         }
 
     }
+    
     // Reset Champ
     public void resetClient() {
         client_id_txt.setText("");
