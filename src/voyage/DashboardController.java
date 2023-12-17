@@ -4,10 +4,21 @@
  */
 package voyage;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +47,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.DatePicker;
@@ -850,9 +863,10 @@ public class DashboardController implements Initializable {
     // Liste des Bus sur  la table Trajet   
     public void list_bus_trajet(){
     
-    String sql = "SELECT id,matricule FROM bus ORDER BY matricule ASC ";
-    con = database.connexionDB();
+    String sql = "SELECT id,matricule FROM bus";
+    
     try{
+        con = database.connexionDB();
         prepare = (PreparedStatement) con.prepareStatement(sql);
         result = prepare.executeQuery();
         //ObservableList listData = FXCollections.observableArrayList();
@@ -1114,7 +1128,7 @@ public class DashboardController implements Initializable {
             // Liste des CLIENT sur  la reservation 
     public void list_client_reservation(){
     
-    String sql = "SELECT prenom,nom FROM client ORDER BY prenom ASC ";
+    String sql = "SELECT prenom,nom FROM client ";
     con = database.connexionDB();
     try{
         prepare = (PreparedStatement) con.prepareStatement(sql);
@@ -1161,6 +1175,7 @@ public class DashboardController implements Initializable {
     
     // Reset Champ
     public void resetRservation() {
+        rsv_id.clear();
         rsv_client.getSelectionModel().clearSelection();
         rsv_trajet.getSelectionModel().clearSelection();
         rsv_date.setValue(null);
@@ -1223,6 +1238,8 @@ public class DashboardController implements Initializable {
     }
     
      public void addReservation() {
+         String code_paiement;
+         String code_aleatoire = generateCode(6);
         String sql = "INSERT INTO reservation(nom_client,nom_trajet,date_depart,heure_depart,numero_siege,mode_paiement,code_paiement,montant) VALUES(?,?,?,?,?,?,?,?)";
         con = database.connexionDB();
         try {
@@ -1247,8 +1264,12 @@ public class DashboardController implements Initializable {
                 prepare.setDate(3, java.sql.Date.valueOf(rsv_date.getValue()));
                 prepare.setString(4, (String)rsv_heure.getSelectionModel().getSelectedItem());  
                 prepare.setString(5, rsv_siege.getText());  
-                prepare.setString(6, (String)rsv_mode_paie.getSelectionModel().getSelectedItem());               
-                prepare.setString(7, (String)rsv_mode_paie.getSelectionModel().getSelectedItem()+"001");                                            
+                prepare.setString(6, (String)rsv_mode_paie.getSelectionModel().getSelectedItem()); 
+                if(rsv_mode_paie.getSelectionModel().getSelectedItem() == "espece"){
+                code_paiement = "cp";
+            }else{
+                code_paiement = "mp";}
+                prepare.setString(7, code_paiement+code_aleatoire);                                            
                 prepare.setString(8, rsv_montant.getText());               
                 prepare.executeUpdate();
                 
@@ -1260,6 +1281,29 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+     
+       public static String generateCode(int length) {
+        // Caractères possibles dans le code
+        String characters = "0123456789";
+        
+        // Initialiser le générateur de nombres aléatoires
+        Random random = new Random();
+
+        // StringBuilder pour construire le code
+        StringBuilder codeBuilder = new StringBuilder(length);
+
+        // Générer chaque caractère du code
+        for (int i = 0; i < length; i++) {
+            // Sélectionner un caractère aléatoire parmi les caractères possibles
+            char randomChar = characters.charAt(random.nextInt(characters.length()));
+
+            // Ajouter le caractère au code
+            codeBuilder.append(randomChar);
+        }
+
+        // Convertir StringBuilder en String
+        return codeBuilder.toString();
     }
      
      
@@ -1308,6 +1352,52 @@ public class DashboardController implements Initializable {
         sortList.comparatorProperty().bind(reservation_tableView.comparatorProperty());
         reservation_tableView.setItems(sortList);
 
+    }
+    
+      // Impression Ticker
+    public void ImprimerTicket() throws IOException, SQLException{
+        
+    Document docu = new Document();
+    
+    String sql = "SELECT * FROM reservation WHERE id = ?";
+    
+    try (Connection con = database.connexionDB();
+         PreparedStatement prepare = (PreparedStatement) con.prepareStatement(sql)) {
+         
+        prepare.setString(1, rsv_id.getText());
+        try (ResultSet result = prepare.executeQuery()) {
+            PdfWriter.getInstance(docu, new FileOutputStream("ticket.pdf"));
+            docu.open();
+
+           
+            SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yy HH:mm");
+            java.util.Date date = new java.util.Date();
+            docu.add(new Paragraph("Date d'impression : " + formater.format(date)));
+            
+            
+            while (result.next()) {
+               
+                String date_depart = result.getString("date_depart"); 
+                String heure_depart = result.getString("heure_depart"); 
+                docu.add(new Paragraph("MICDA VOYAGE"));
+                docu.add(new Paragraph("CLIENT: " + result.getString("nom_client")));
+                docu.add(new Paragraph("Trajet : " + result.getString("nom_trajet"))); 
+                docu.add(new Paragraph("DÉPART : " + date_depart)); 
+                docu.add(new Paragraph("HEURE DEPART : " + heure_depart)); 
+                docu.add(new Paragraph("N° Siége : " + result.getString("numero_siege"))); 
+                docu.add(new Paragraph("Mode Paiement : " + result.getString("mode_paiement"))); 
+                docu.add(new Paragraph("Code Paiement : " + result.getString("code_paiement"))); 
+                docu.add(new Paragraph("Montant : " + result.getString("montant"))); 
+                
+            }
+
+            docu.close();
+            Desktop.getDesktop().open(new File("ticket.pdf"));
+        }
+    } catch (FileNotFoundException | DocumentException e) {
+        e.printStackTrace();
+    }
+        
     }
      /////-----------------------FIN RESERVATION------------///
     

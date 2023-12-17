@@ -4,11 +4,22 @@
  */
 package voyage;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +43,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author macair
  */
 public class ReservationController implements Initializable {
+    
+    // base de donnees
+    private Connection con;
+    private PreparedStatement prepare;
+    private ResultSet result;
+    private Statement statement;
 
     @FXML
     private ComboBox<?> rsv_mode_paie;
@@ -85,22 +102,6 @@ public class ReservationController implements Initializable {
     @FXML
     private TableColumn<Reservation, Date> rsv_col_date;
 
-    
-
-    
-
-    
-
-   
-  
-
-    
-    
-    // base de donnees
-    private Connection con;
-    private PreparedStatement prepare;
-    private ResultSet result;
-    private Statement statement;
     
           // Liste des mode de paiement
     private String[] listMode_paiement = {"espece", "wallet"};
@@ -315,6 +316,32 @@ public class ReservationController implements Initializable {
 
     }
     
+    // Impression Ticker
+    public void ImprimerTicket() throws IOException{
+        
+    Document docu = new Document();
+     
+    try{
+        
+    PdfWriter.getInstance(docu, new FileOutputStream("ticket.pdf"));
+    docu.open();
+    String format = "dd/mm/yy hh:mm";
+    
+    SimpleDateFormat formater = new SimpleDateFormat(format);
+    java.util.Date date = new java.util.Date();
+    Image img = Image.getInstance("chemin_de_votre_image.jpg");
+    img.setAlignment(Image.ALIGN_CENTER);
+    docu.add(img);
+    docu.add(new Paragraph("Ansoumane Michel TAMBA"));
+    //docu.add(new Paragraph(""))
+    
+    docu.close();
+    Desktop.getDesktop().open(new File("ticket.pdf"));
+    
+    }catch(FileNotFoundException | DocumentException e){e.printStackTrace();}
+        
+    }
+  
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
