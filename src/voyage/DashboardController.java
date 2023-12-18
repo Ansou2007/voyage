@@ -53,6 +53,7 @@ import java.util.Random;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 
 /**
  * FXML Controller class
@@ -72,7 +73,12 @@ public class DashboardController implements Initializable {
     
     // Instanciez ClientController
     private ClientController clientController = new ClientController();
-
+    @FXML
+    private Label total_bus;
+    @FXML
+    private Label total_trajet;
+    @FXML
+    private Label total_client;
     @FXML
     private ClientController clientSectionController;
     @FXML
@@ -407,7 +413,52 @@ public class DashboardController implements Initializable {
     public void Btn_close() {
         System.exit(0);
     }
-
+    //STATISTIQUE
+    public void total_bus(){
+    
+    String sql = "SELECT COUNT(*) FROM bus";
+    con = database.connexionDB();
+    int total = 0;
+    try{
+    prepare = (PreparedStatement) con.prepareStatement(sql);
+    result = prepare.executeQuery();
+    while(result.next()){
+        total = result.getInt("COUNT(*)");
+    }
+    total_bus.setText(String.valueOf(total));
+    }catch(Exception e){}
+    
+    }
+    public void total_trajet(){
+    
+    String sql = "SELECT COUNT(*) FROM trajet";
+    con = database.connexionDB();
+    int total = 0;
+    try{
+    prepare = (PreparedStatement) con.prepareStatement(sql);
+    result = prepare.executeQuery();
+    while(result.next()){
+        total = result.getInt("COUNT(*)");
+    }
+    total_trajet.setText(String.valueOf(total));
+    }catch(Exception e){}
+    
+    }
+    public void total_client(){
+    
+    String sql = "SELECT COUNT(*) FROM client";
+    con = database.connexionDB();
+    int total = 0;
+    try{
+    prepare = (PreparedStatement) con.prepareStatement(sql);
+    result = prepare.executeQuery();
+    while(result.next()){
+        total = result.getInt("COUNT(*)");
+    }
+    total_client.setText(String.valueOf(total));
+    }catch(Exception e){}
+    
+    }
     // Reduire 
     public void minimize() {
         Stage stage = (Stage) Main_formulaire.getScene().getWindow();
@@ -1283,6 +1334,49 @@ public class DashboardController implements Initializable {
 
     }
      
+      public void deleteReservation() {
+
+        String sql = "DELETE FROM reservation WHERE id= '" + rsv_id.getText() + "'";
+
+        try {
+            con = database.connexionDB();
+            Alert alert;
+            if (rsv_id.getText().isEmpty()) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Selectionner une ligne");
+                alert.showAndWait();
+
+            } else {
+                alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Ok");
+                alert.setHeaderText(null);
+                alert.setContentText("Etes-vous sure de supprimer");
+                // alert.showAndWait();
+
+                Optional<ButtonType> option = alert.showAndWait();
+                if (option.get().equals(ButtonType.OK)) {
+
+                    statement = con.createStatement();
+                    statement.executeUpdate(sql);
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Ok");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Suppression avec succéss");
+                    alert.showAndWait();
+
+                    AjoutReservationList();
+                    resetRservation();
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+     
        public static String generateCode(int length) {
         // Caractères possibles dans le code
         String characters = "0123456789";
@@ -1403,7 +1497,11 @@ public class DashboardController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        // Stat
+        total_bus();
+        total_trajet();
+        total_client();
+        // fin
         AjoutBusList();
         AjoutClientList();
         AjoutTrajetList();
