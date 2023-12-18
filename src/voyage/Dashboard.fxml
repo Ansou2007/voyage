@@ -115,7 +115,7 @@
                                           <String fx:value="shadow" />
                                        </styleClass>
                                        <children>
-                                          <AreaChart layoutX="17.0" prefHeight="284.0" prefWidth="434.0" title="Reservations">
+                                          <AreaChart fx:id="diagramme_reservation" layoutX="17.0" prefHeight="284.0" prefWidth="434.0" title="Reservations">
                                             <xAxis>
                                               <CategoryAxis side="BOTTOM" />
                                             </xAxis>
@@ -123,7 +123,7 @@
                                               <NumberAxis side="LEFT" />
                                             </yAxis>
                                           </AreaChart>
-                                          <BarChart layoutX="451.0" layoutY="1.0" prefHeight="292.0" prefWidth="464.0" title="Clients">
+                                          <BarChart fx:id="diagramme_client" layoutX="451.0" layoutY="1.0" prefHeight="292.0" prefWidth="464.0" title="Clients">
                                             <xAxis>
                                               <CategoryAxis side="BOTTOM" />
                                             </xAxis>

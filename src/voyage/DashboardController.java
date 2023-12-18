@@ -52,6 +52,9 @@ import java.util.Date;
 import java.util.Random;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 
@@ -75,12 +78,18 @@ public class DashboardController implements Initializable {
     private ClientController clientController = new ClientController();
     @FXML
     private Label total_bus;
+    
     @FXML
     private Label total_trajet;
+    
     @FXML
     private Label total_client;
+    
+     
+     
     @FXML
     private ClientController clientSectionController;
+    
     @FXML
     private Button Btn_deconnexion;
     @FXML
@@ -275,7 +284,10 @@ public class DashboardController implements Initializable {
         
 
     //---------------FIN RESERVATION--------------//
-
+   @FXML
+    private AreaChart<String, Number> diagramme_reservation;
+     @FXML
+    private BarChart<String, Number> diagramme_client;
     // Changement Formulaire
     public void menu(ActionEvent event) {
         if (event.getSource() == Menu_Home) {
@@ -290,6 +302,8 @@ public class DashboardController implements Initializable {
             Menu_Trajet.setStyle("-fx-background-color:transparent");
             Menu_Client.setStyle("-fx-background-color:transparent");
             Menu_Reservation.setStyle("-fx-background-color:transparent");
+            diagramme_reservation();
+            diagramme_client();
 
         } else if (event.getSource() == Menu_Bus) {
             Formulaire_Dashboard.setVisible(false);
@@ -459,6 +473,45 @@ public class DashboardController implements Initializable {
     }catch(Exception e){}
     
     }
+    // DIAGRAMME
+  
+public void diagramme_reservation() {
+    diagramme_reservation.getData().clear();
+    String sql = "SELECT date_depart, SUM(montant) FROM reservation GROUP BY date_depart ORDER BY TIMESTAMP(date_depart) ASC LIMIT 6";
+    con = database.connexionDB();
+
+    try {
+        XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();  // Correction du type générique
+        prepare = (PreparedStatement) con.prepareStatement(sql);
+        result = prepare.executeQuery();
+
+        while (result.next()) {
+            chartSeries.getData().add(new XYChart.Data<>(result.getString(1), result.getInt(2)));
+        }
+
+        diagramme_reservation.getData().add(chartSeries);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+    public void diagramme_client() {
+    diagramme_client.getData().clear();
+    String sql = "SELECT date_depart, COUNT(nom_client) FROM reservation GROUP BY date_depart ORDER BY TIMESTAMP(date_depart) ASC LIMIT 6";
+    con = database.connexionDB();
+    try {
+        XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();  // Correction du type générique
+        prepare = (PreparedStatement) con.prepareStatement(sql);
+        result = prepare.executeQuery();
+
+        while (result.next()) {
+            chartSeries.getData().add(new XYChart.Data<>(result.getString(1), result.getInt(2)));
+        }
+        diagramme_client.getData().add(chartSeries);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+   
     // Reduire 
     public void minimize() {
         Stage stage = (Stage) Main_formulaire.getScene().getWindow();
@@ -1501,6 +1554,8 @@ public class DashboardController implements Initializable {
         total_bus();
         total_trajet();
         total_client();
+        diagramme_reservation();
+        diagramme_client();
         // fin
         AjoutBusList();
         AjoutClientList();
