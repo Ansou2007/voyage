@@ -507,7 +507,7 @@ public void diagramme_reservation() {
 }
     public void diagramme_client() {
     diagramme_client.getData().clear();
-    String sql = "SELECT date_depart, COUNT(nom_client) FROM reservation GROUP BY date_depart ORDER BY TIMESTAMP(date_depart) ASC LIMIT 6";
+    String sql = "SELECT date_depart, COUNT(id_client) FROM reservation GROUP BY date_depart ORDER BY TIMESTAMP(date_depart) ASC LIMIT 6";
     con = database.connexionDB();
     try {
         XYChart.Series<String, Number> chartSeries = new XYChart.Series<>();  // Correction du type générique
@@ -1265,15 +1265,13 @@ public void diagramme_reservation() {
     try{
         con = database.connexionDB();
         prepare = (PreparedStatement) con.prepareStatement(sql);
-        result = prepare.executeQuery();
-      
+        result = prepare.executeQuery();      
         if(result.next()){
            rsv_trajet_id.setText(result.getString("id"));
            rsv_bus_mat.setText(result.getString("matricule"));
            rsv_place.setText(result.getString("nbre_place"));
         }
-        
-        
+              
     }catch(Exception e){e.printStackTrace();}
     
     }
@@ -1302,7 +1300,7 @@ public void diagramme_reservation() {
             // Liste des CLIENT sur  la reservation 
     public void list_client_reservation(){
     
-    String sql = "SELECT prenom,nom FROM client ";
+    String sql = "SELECT prenom,nom FROM client";
     con = database.connexionDB();
     try{
         prepare = (PreparedStatement) con.prepareStatement(sql);
@@ -1372,8 +1370,8 @@ public void diagramme_reservation() {
         ajoutReservationList = ListeReservation();
         rsv_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         rsv_col_client.setCellValueFactory(new PropertyValueFactory<>("nom_client"));
-        rsv_col_bus.setCellValueFactory(new PropertyValueFactory<>("nom_client"));
-        rsv_col_trajet.setCellValueFactory(new PropertyValueFactory<>("nom_trajet"));
+        rsv_col_bus.setCellValueFactory(new PropertyValueFactory<>("matricule"));
+        rsv_col_trajet.setCellValueFactory(new PropertyValueFactory<>("code_trajet"));
         rsv_col_paiement.setCellValueFactory(new PropertyValueFactory<>("mode_paiement"));
         rsv_col_code.setCellValueFactory(new PropertyValueFactory<>("code_paiement"));
         rsv_col_siege.setCellValueFactory(new PropertyValueFactory<>("numero_siege"));
@@ -1388,7 +1386,9 @@ public void diagramme_reservation() {
     public ObservableList<Reservation> ListeReservation() {
         ObservableList<Reservation> reservationList = FXCollections.observableArrayList();
 
-        String sql = "SELECT * FROM reservation";
+        String sql = """
+                     SELECT reservation.id,CONCAT(prenom,' ',nom) as nom_client,matricule,code_trajet,mode_paiement,code_paiement,numero_siege,montant,date_depart FROM reservation,trajet,bus,client
+                     WHERE reservation.id_client = client.id AND reservation.id_trajet = trajet.id AND trajet.bus_id = bus.id""";
         con = database.connexionDB();
 
         try {
@@ -1398,14 +1398,14 @@ public void diagramme_reservation() {
             while (result.next()) {
                 reservation = new Reservation(result.getInt("id"),
                          result.getString("nom_client"),
-                         //result.getString("nom_client"),
-                         result.getString("nom_trajet"),
+                         result.getString("matricule"),
+                         result.getString("code_trajet"),
                          result.getString("mode_paiement"),
                          result.getString("code_paiement"),
                          result.getInt("numero_siege"),
                          result.getInt("montant"),
-                        result.getDate("date_depart"),
-                         result.getString("heure_depart"));
+                        result.getDate("date_depart"));
+                        // result.getString("heure_depart"));
                          
                 reservationList.add(reservation);
             }
@@ -1418,7 +1418,7 @@ public void diagramme_reservation() {
      public void addReservation() {
          String code_paiement;
          String code_aleatoire = generateCode(6);
-        String sql = "INSERT INTO reservation(nom_client,nom_trajet,date_depart,heure_depart,numero_siege,mode_paiement,code_paiement,montant) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO reservation(id_client,id_trajet,date_depart,heure_depart,numero_siege,mode_paiement,code_paiement,montant) VALUES(?,?,?,?,?,?,?,?)";
         con = database.connexionDB();
         try {
             Alert alert;
@@ -1428,6 +1428,8 @@ public void diagramme_reservation() {
                     || rsv_heure.getSelectionModel().getSelectedItem() == null
                     || rsv_mode_paie.getSelectionModel().getSelectedItem() == null
                     || rsv_siege.getText().isEmpty()
+                    || rsv_client_id.getText().isEmpty()
+                    || rsv_trajet_id.getText().isEmpty()
                     || rsv_montant.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
@@ -1437,8 +1439,9 @@ public void diagramme_reservation() {
 
             } else {
                 prepare = (PreparedStatement) con.prepareStatement(sql);
-                prepare.setString(1, (String)rsv_client.getSelectionModel().getSelectedItem());
-                prepare.setString(2, (String)rsv_trajet.getSelectionModel().getSelectedItem());
+                prepare.setString(1, rsv_client_id.getText());
+                prepare.setString(2, rsv_trajet_id.getText());
+               // prepare.setString(2, (String)rsv_trajet.getSelectionModel().getSelectedItem());
                 prepare.setDate(3, java.sql.Date.valueOf(rsv_date.getValue()));
                 prepare.setString(4, (String)rsv_heure.getSelectionModel().getSelectedItem());  
                 prepare.setString(5, rsv_siege.getText());  
@@ -1539,11 +1542,9 @@ public void diagramme_reservation() {
         rsv_id.setText(String.valueOf(reservation.getId()));
         rsv_siege.setText(String.valueOf(reservation.getNumero_siege()));
         rsv_montant.setText(String.valueOf(reservation.getMontant()));
-       // client_cin_txt.setText(String.valueOf(client.getCin()));
-        //client_telephone_txt.setText(String.valueOf(client.getTelephone()));   
-       //// client_cin_txt.setText(String.valueOf(bus.getNbre_place()));
-            
-
+       java.sql.Date dateDepart = (java.sql.Date) reservation.getDate_depart();
+        rsv_date.setValue(dateDepart.toLocalDate());
+     
     }
     
      // recherche Reservation
@@ -1559,9 +1560,9 @@ public void diagramme_reservation() {
 
                 if (predicateReservation.getNom_client().toString().contains(searchKey)) {
                     return true;
-                }else if(predicateReservation.getDate_depart().toString().contains(searchKey)){
+                }else if(predicateReservation.getMatricule().toString().contains(searchKey)){
                 return true ;       
-                }else if(predicateReservation.getNom_trajet().toString().contains(searchKey)){
+                }else if(predicateReservation.getCode_paiement().toString().contains(searchKey)){
                 return true ;
                 }else return false; 
                 
@@ -1580,7 +1581,9 @@ public void diagramme_reservation() {
         
     Document docu = new Document();
     
-    String sql = "SELECT * FROM reservation WHERE id = ?";
+    String sql = """
+                 SELECT reservation.id,CONCAT(prenom,' ',nom) as nom_complet,matricule,code_trajet,mode_paiement,code_paiement,numero_siege,montant,date_depart,heure_depart FROM reservation,trajet,bus,client
+                                      WHERE reservation.id_client = client.id AND reservation.id_trajet = trajet.id AND trajet.bus_id = bus.id AND reservation.id = ?""";
     
     try (Connection con = database.connexionDB();
          PreparedStatement prepare = (PreparedStatement) con.prepareStatement(sql)) {
@@ -1601,8 +1604,8 @@ public void diagramme_reservation() {
                 String date_depart = result.getString("date_depart"); 
                 String heure_depart = result.getString("heure_depart"); 
                 docu.add(new Paragraph("MICDA VOYAGE"));
-                docu.add(new Paragraph("CLIENT: " + result.getString("nom_client")));
-                docu.add(new Paragraph("Trajet : " + result.getString("nom_trajet"))); 
+                docu.add(new Paragraph("CLIENT: " + result.getString("nom_complet")));
+                docu.add(new Paragraph("Trajet : " + result.getString("code_trajet"))); 
                 docu.add(new Paragraph("DÉPART : " + date_depart)); 
                 docu.add(new Paragraph("HEURE DEPART : " + heure_depart)); 
                 docu.add(new Paragraph("N° Siége : " + result.getString("numero_siege"))); 

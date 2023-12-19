@@ -345,7 +345,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Formulaire_Reservation" layoutX="220.0" layoutY="108.0" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Reservation" layoutX="220.0" layoutY="108.0" prefHeight="655.0" prefWidth="961.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="8.0" layoutY="14.0" prefHeight="628.0" prefWidth="292.0" stylesheets="@dashboard.css">
                                  <children>
@@ -355,9 +355,9 @@
                                        </font>
                                     </Label>
                                     <Label layoutX="17.0" layoutY="96.0" text="Client" />
-                                    <ComboBox fx:id="rsv_client" layoutX="83.0" layoutY="90.0" onAction="#list_client_reservation" onMouseEntered="#selection_id_client" prefHeight="25.0" prefWidth="189.0" promptText="Client" stylesheets="@dashboard.css" />
+                                    <ComboBox fx:id="rsv_client" layoutX="83.0" layoutY="90.0" onAction="#list_client_reservation" onMouseMoved="#selection_id_client" prefHeight="25.0" prefWidth="189.0" promptText="Client" stylesheets="@dashboard.css" />
                                     <Label layoutX="17.0" layoutY="143.0" text="Trajet" />
-                                    <ComboBox fx:id="rsv_trajet" layoutX="83.0" layoutY="137.0" onAction="#list_trajet_reservation" onMousePressed="#selection_id_trajet" prefHeight="27.0" prefWidth="189.0" promptText="Trajet" styleClass="textfield" stylesheets="@dashboard.css" />
+                                    <ComboBox fx:id="rsv_trajet" layoutX="83.0" layoutY="137.0" onAction="#list_trajet_reservation" onMouseMoved="#selection_id_trajet" prefHeight="27.0" prefWidth="189.0" promptText="Trajet" styleClass="textfield" stylesheets="@dashboard.css" />
                                     <Label layoutX="3.0" layoutY="319.0" text="Paiement" />
                                     <ComboBox fx:id="rsv_mode_paie" layoutX="79.0" layoutY="313.0" onAction="#listMode_paiement" prefHeight="27.0" prefWidth="189.0" promptText="mode" styleClass="textfield" stylesheets="@dashboard.css" />
                                     <Label layoutX="3.0" layoutY="358.0" text="Siege" />
