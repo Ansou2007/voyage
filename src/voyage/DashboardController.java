@@ -196,9 +196,13 @@ public class DashboardController implements Initializable {
     //---------------TRAJET--------------//
      @FXML
    // private ComboBox<?> trajet_bus_txt;
-    private ComboBox<?> trajet_bus_txt;
+    private ComboBox<String> trajet_bus_txt;
       @FXML
     private TextField trajet_id_txt;
+      
+      @FXML
+    private TextField trajet_bus_id;
+     
       
        @FXML
     private TextField trajet_dpt_txt;
@@ -230,7 +234,14 @@ public class DashboardController implements Initializable {
     //---------------FIN TRAJET--------------//
     
     //---------------RESERVATION--------------//
-    
+     @FXML
+    private TextField rsv_client_id;
+      @FXML
+    private TextField rsv_trajet_id;
+      @FXML
+    private TextField rsv_bus_mat;
+      @FXML
+    private TextField rsv_place;
     @FXML
     private ComboBox<?> rsv_mode_paie;
       @FXML
@@ -336,7 +347,7 @@ public class DashboardController implements Initializable {
             Menu_Bus.setStyle("-fx-background-color:transparent");
             Menu_Client.setStyle("-fx-background-color:transparent");
             Menu_Reservation.setStyle("-fx-background-color:transparent");
-            list_bus_trajet();
+            //list_bus_trajet();
             ListeTrajet();
             rechercheTrajet();
 
@@ -364,7 +375,7 @@ public class DashboardController implements Initializable {
             Formulaire_Reservation.setVisible(true);
             listMode_paiement();
             listHeure_depart();
-            list_client_reservation();
+           // list_client_reservation();
             list_trajet_reservation();
             rechercheReservation();
 
@@ -556,7 +567,7 @@ public void diagramme_reservation() {
         bus_matricule_txt.setText("");
         bus_description_txt.setText("");
         bus_nbre_place_txt.setText("");
-        bus_etat_txt.getSelectionModel().getSelectedItem();
+        bus_etat_txt.getSelectionModel().clearSelection();
     }
 
     // Liste des Etat du Bus (fonctionnel ou en panne)
@@ -967,34 +978,53 @@ public void diagramme_reservation() {
     // Liste des Bus sur  la table Trajet   
     public void list_bus_trajet(){
     
-    String sql = "SELECT id,matricule FROM bus";
+    String sql = "SELECT matricule FROM bus";
     
     try{
         con = database.connexionDB();
         prepare = (PreparedStatement) con.prepareStatement(sql);
         result = prepare.executeQuery();
-        //ObservableList listData = FXCollections.observableArrayList();
-        ObservableList listData = FXCollections.observableArrayList();
-        
+        //ObservableList listBusId = FXCollections.observableArrayList();
+        //ObservableList listMatricules = FXCollections.observableArrayList();
+        //ObservableList<Integer> listBusId = FXCollections.observableArrayList();  // Liste pour les ID
+        ObservableList<String> listMatricules = FXCollections.observableArrayList();
         while(result.next()){
-            //listData.add(result.getString("id"));
-            listData.add(result.getString("matricule"));
+           
+            listMatricules.add(result.getString("matricule"));
         }
-        trajet_bus_txt.setItems(listData);
-        //bus_id_txt.setItems(listData);
-        //System.out.println(listData);
+     
+        trajet_bus_txt.setItems(listMatricules);
+       
+    }catch(Exception e){e.printStackTrace();}
+    
+    }
+    public void selection_id_bus(){
+    
+    String sql = "SELECT id,matricule FROM bus WHERE matricule='"+trajet_bus_txt.getSelectionModel().getSelectedItem()+"'";
+    
+    try{
+        con = database.connexionDB();
+        prepare = (PreparedStatement) con.prepareStatement(sql);
+        result = prepare.executeQuery();
+      
+        if(result.next()){
+           trajet_bus_id.setText(result.getString("id"));
+        }
+        
+        
     }catch(Exception e){e.printStackTrace();}
     
     }
    
     // Ajout Trajet
      public void addTrajet() {
-        String sql = "INSERT INTO trajet(bus_name,code_trajet,ville_depart,ville_arrivee) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO trajet(bus_id,code_trajet,ville_depart,ville_arrivee) VALUES(?,?,?,?)";
         con = database.connexionDB();
         try {
             Alert alert;
             if (trajet_bus_txt.getSelectionModel().getSelectedItem() == null
                     || trajet_dpt_txt.getText().isEmpty()
+                    || trajet_bus_id.getText().isEmpty()
                     || trajet_a_txt.getText().isEmpty()) {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
@@ -1004,7 +1034,8 @@ public void diagramme_reservation() {
 
             } else {
                 prepare = (PreparedStatement) con.prepareStatement(sql);
-                prepare.setString(1, (String) trajet_bus_txt.getSelectionModel().getSelectedItem()); 
+                 prepare.setString(1, trajet_bus_id.getText());  
+                //prepare.setString(2, (String) trajet_bus_txt.getSelectionModel().getSelectedItem()); 
                 prepare.setString(2, trajet_dpt_txt.getText()+"<->"+trajet_a_txt.getText());
                 prepare.setString(3, trajet_dpt_txt.getText());
                 prepare.setString(4, trajet_a_txt.getText());               
@@ -1026,8 +1057,8 @@ public void diagramme_reservation() {
 
         ajoutTrajetList = ListeTrajet();
         trajet_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
-        trajet_col_bus.setCellValueFactory(new PropertyValueFactory<>("bus_name"));
         trajet_col_code.setCellValueFactory(new PropertyValueFactory<>("code_trajet"));
+        trajet_col_bus.setCellValueFactory(new PropertyValueFactory<>("matricule"));  
         trajet_col_depart.setCellValueFactory(new PropertyValueFactory<>("ville_depart"));
         trajet_col_arrivee.setCellValueFactory(new PropertyValueFactory<>("ville_arrivee"));        
         trajet_tableView.setItems(ajoutTrajetList);
@@ -1038,7 +1069,7 @@ public void diagramme_reservation() {
     public ObservableList<Trajet> ListeTrajet() {
         ObservableList<Trajet> trajetList = FXCollections.observableArrayList();
 
-        String sql = "SELECT id,bus_name,code_trajet,ville_depart,ville_arrivee FROM trajet";
+        String sql = "SELECT trajet.id,code_trajet,matricule,ville_depart,ville_arrivee FROM trajet,bus WHERE bus.id=trajet.bus_id";
         con = database.connexionDB();
 
         try {
@@ -1047,8 +1078,8 @@ public void diagramme_reservation() {
             Trajet trajet;
             while (result.next()) {
                 trajet = new Trajet(result.getInt("id"),
-                         result.getString("bus_name"),
-                         result.getString("code_trajet"),
+                        result.getString("code_trajet"),
+                         result.getString("matricule"),                       
                          result.getString("ville_depart"),
                          result.getString("ville_arrivee"));
                          
@@ -1063,9 +1094,10 @@ public void diagramme_reservation() {
       // Reset Champ
     public void resetTrajet() {
         trajet_id_txt.setText("");
-        trajet_bus_txt.getSelectionModel().getSelectedItem();
+        trajet_bus_txt.getSelectionModel().clearSelection();
         trajet_dpt_txt.setText("");
         trajet_a_txt.setText("");
+        trajet_bus_id.clear();
        
       
     }
@@ -1185,7 +1217,7 @@ public void diagramme_reservation() {
                 //String searchKey = newValue.toLowerCase();
                 String searchKey = newValue;
 
-                if (predicateTrajet.getBus_name().toString().contains(searchKey)) {
+                if (predicateTrajet.getMatricule().toString().contains(searchKey)) {
                     return true;
                 }else if(predicateTrajet.getCode_trajet().toString().contains(searchKey)){
                 return true ;       
@@ -1207,6 +1239,44 @@ public void diagramme_reservation() {
     
      /////-----------------------RESERVATION------------///
     
+            // Selection ID client
+     public void selection_id_client(){
+    
+    String sql = "SELECT id,prenom, nom FROM client WHERE TRIM(CONCAT(prenom, ' ', nom))='"+rsv_client.getSelectionModel().getSelectedItem()+"'";
+    
+    try{
+        con = database.connexionDB();
+        prepare = (PreparedStatement) con.prepareStatement(sql);
+        result = prepare.executeQuery();
+      
+        if(result.next()){
+           rsv_client_id.setText(result.getString("id"));
+        }
+        
+        
+    }catch(Exception e){e.printStackTrace();}
+    
+    }
+            // Selection ID trajet
+     public void selection_id_trajet(){
+    
+    String sql = "SELECT trajet.id,code_trajet,matricule,nbre_place FROM trajet,bus WHERE trajet.bus_id=bus.id AND code_trajet='"+rsv_trajet.getSelectionModel().getSelectedItem()+"'";
+    
+    try{
+        con = database.connexionDB();
+        prepare = (PreparedStatement) con.prepareStatement(sql);
+        result = prepare.executeQuery();
+      
+        if(result.next()){
+           rsv_trajet_id.setText(result.getString("id"));
+           rsv_bus_mat.setText(result.getString("matricule"));
+           rsv_place.setText(result.getString("nbre_place"));
+        }
+        
+        
+    }catch(Exception e){e.printStackTrace();}
+    
+    }
              // Liste des mode de paiement
     private String[] listMode_paiement = {"espece", "wallet"};
     public void listMode_paiement() {
@@ -1280,6 +1350,10 @@ public void diagramme_reservation() {
     // Reset Champ
     public void resetRservation() {
         rsv_id.clear();
+        rsv_client_id.clear();
+        rsv_trajet_id.clear();
+        rsv_bus_mat.clear();
+        rsv_place.clear();
         rsv_client.getSelectionModel().clearSelection();
         rsv_trajet.getSelectionModel().clearSelection();
         rsv_date.setValue(null);
@@ -1550,6 +1624,7 @@ public void diagramme_reservation() {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        con = database.connexionDB();
         // Stat
         total_bus();
         total_trajet();

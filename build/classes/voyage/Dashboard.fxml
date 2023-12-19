@@ -105,7 +105,7 @@
                <center>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
-                        <AnchorPane fx:id="Formulaire_Dashboard" layoutX="82.0" layoutY="78.0" prefHeight="655.0" prefWidth="960.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Dashboard" layoutX="82.0" layoutY="78.0" prefHeight="655.0" prefWidth="960.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="287.0" prefWidth="864.0" styleClass="shadow" stylesheets="@dashboard.css" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="22.0">
                                  <children>
@@ -249,7 +249,7 @@
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="Formulaire_Trajet" layoutX="195.0" layoutY="140.0" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="Formulaire_Trajet" layoutX="195.0" layoutY="140.0" onMouseEntered="#selection_id_bus" prefHeight="655.0" prefWidth="961.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="7.0" layoutY="16.0" prefHeight="609.0" prefWidth="496.0" stylesheets="@dashboard.css">
                                  <styleClass>
@@ -260,7 +260,7 @@
                                     <TableView fx:id="trajet_tableView" layoutX="15.0" layoutY="113.0" onMouseClicked="#TrajetSelection" prefHeight="496.0" prefWidth="479.0">
                                       <columns>
                                         <TableColumn fx:id="trajet_col_id" prefWidth="40.0" text="Id" />
-                                        <TableColumn fx:id="trajet_col_bus" prefWidth="113.0" text="Bus" />
+                                        <TableColumn fx:id="trajet_col_bus" prefWidth="113.0" text="Matricule" />
                                           <TableColumn fx:id="trajet_col_code" prefWidth="139.0" text="Code" />
                                           <TableColumn fx:id="trajet_col_depart" prefWidth="99.0" text="Départ" />
                                           <TableColumn fx:id="trajet_col_arrivee" prefWidth="82.0" text="Arrivée" />
@@ -291,6 +291,7 @@
                                     <Button layoutX="70.0" layoutY="456.0" mnemonicParsing="false" onAction="#resetTrajet" prefHeight="45.0" prefWidth="131.0" styleClass="reset-btn" text="Reset" />
                                     <Button layoutX="215.0" layoutY="456.0" mnemonicParsing="false" onAction="#deleteTrajet" prefHeight="45.0" prefWidth="131.0" styleClass="delete-btn" text="Supprimer" />
                                     <TextField fx:id="trajet_id_txt" layoutX="164.0" layoutY="61.0" visible="false" />
+                                    <TextField fx:id="trajet_bus_id" layoutX="11.0" layoutY="57.0" prefHeight="25.0" prefWidth="105.0" />
                                  </children>
                               </AnchorPane>
                            </children>
@@ -354,25 +355,31 @@
                                        </font>
                                     </Label>
                                     <Label layoutX="17.0" layoutY="96.0" text="Client" />
-                                    <ComboBox fx:id="rsv_client" layoutX="83.0" layoutY="90.0" onAction="#list_client_reservation" prefHeight="25.0" prefWidth="189.0" promptText="Client" stylesheets="@dashboard.css" />
+                                    <ComboBox fx:id="rsv_client" layoutX="83.0" layoutY="90.0" onAction="#list_client_reservation" onMouseEntered="#selection_id_client" prefHeight="25.0" prefWidth="189.0" promptText="Client" stylesheets="@dashboard.css" />
                                     <Label layoutX="17.0" layoutY="143.0" text="Trajet" />
-                                    <ComboBox fx:id="rsv_trajet" layoutX="83.0" layoutY="137.0" onAction="#list_trajet_reservation" prefHeight="27.0" prefWidth="189.0" promptText="Trajet" styleClass="textfield" stylesheets="@dashboard.css" />
-                                    <Label layoutX="3.0" layoutY="271.0" text="Paiement" />
-                                    <ComboBox fx:id="rsv_mode_paie" layoutX="79.0" layoutY="265.0" onAction="#listMode_paiement" prefHeight="27.0" prefWidth="189.0" promptText="mode" styleClass="textfield" stylesheets="@dashboard.css" />
-                                    <Label layoutX="3.0" layoutY="315.0" text="Siege" />
-                                    <Label layoutX="5.0" layoutY="361.0" text="Montant" />
-                                    <TextField fx:id="rsv_montant" layoutX="78.0" layoutY="357.0" prefHeight="27.0" prefWidth="188.0" promptText="Montant" styleClass="textfield" stylesheets="@dashboard.css" />
-                                    <Button layoutX="36.0" layoutY="409.0" mnemonicParsing="false" onAction="#addReservation" prefHeight="50.0" prefWidth="101.0" styleClass="add-btn" text="Ajouter" />
-                                    <Button layoutX="157.0" layoutY="410.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" styleClass="update-btn" text="Modifier" />
-                                    <Button layoutX="37.0" layoutY="479.0" mnemonicParsing="false" onAction="#resetRservation" prefHeight="50.0" prefWidth="101.0" styleClass="reset-btn" text="Reset" />
-                                    <Button layoutX="158.0" layoutY="482.0" mnemonicParsing="false" onAction="#deleteReservation" prefHeight="50.0" prefWidth="101.0" styleClass="delete-btn" text="Supprimer" />
-                                    <Button layoutX="36.0" layoutY="543.0" mnemonicParsing="false" onAction="#ImprimerTicket" prefHeight="50.0" prefWidth="222.0" styleClass="print-btn" stylesheets="@dashboard.css" text="Imprimer Ticket" />
-                                    <TextField fx:id="rsv_siege" layoutX="77.0" layoutY="311.0" prefHeight="25.0" prefWidth="189.0" />
-                                    <Label layoutX="5.0" layoutY="180.0" text="Date Départ" />
-                                    <DatePicker fx:id="rsv_date" layoutX="82.0" layoutY="179.0" prefHeight="25.0" prefWidth="189.0" />
-                                    <Label layoutX="5.0" layoutY="221.0" text="Heure Départ" />
-                                    <ComboBox fx:id="rsv_heure" layoutX="81.0" layoutY="217.0" onAction="#listHeure_depart" prefHeight="25.0" prefWidth="186.0" promptText="Heure" />
+                                    <ComboBox fx:id="rsv_trajet" layoutX="83.0" layoutY="137.0" onAction="#list_trajet_reservation" onMousePressed="#selection_id_trajet" prefHeight="27.0" prefWidth="189.0" promptText="Trajet" styleClass="textfield" stylesheets="@dashboard.css" />
+                                    <Label layoutX="3.0" layoutY="319.0" text="Paiement" />
+                                    <ComboBox fx:id="rsv_mode_paie" layoutX="79.0" layoutY="313.0" onAction="#listMode_paiement" prefHeight="27.0" prefWidth="189.0" promptText="mode" styleClass="textfield" stylesheets="@dashboard.css" />
+                                    <Label layoutX="3.0" layoutY="358.0" text="Siege" />
+                                    <Label layoutX="5.0" layoutY="395.0" text="Montant" />
+                                    <TextField fx:id="rsv_montant" layoutX="78.0" layoutY="391.0" prefHeight="27.0" prefWidth="188.0" promptText="Montant" styleClass="textfield" stylesheets="@dashboard.css" />
+                                    <Button layoutX="36.0" layoutY="452.0" mnemonicParsing="false" onAction="#addReservation" prefHeight="50.0" prefWidth="101.0" styleClass="add-btn" text="Ajouter" />
+                                    <Button layoutX="157.0" layoutY="453.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="101.0" styleClass="update-btn" text="Modifier" />
+                                    <Button layoutX="37.0" layoutY="508.0" mnemonicParsing="false" onAction="#resetRservation" prefHeight="50.0" prefWidth="101.0" styleClass="reset-btn" text="Reset" />
+                                    <Button layoutX="158.0" layoutY="507.0" mnemonicParsing="false" onAction="#deleteReservation" prefHeight="50.0" prefWidth="101.0" styleClass="delete-btn" text="Supprimer" />
+                                    <Button layoutX="36.0" layoutY="562.0" mnemonicParsing="false" onAction="#ImprimerTicket" prefHeight="50.0" prefWidth="222.0" styleClass="print-btn" stylesheets="@dashboard.css" text="Imprimer Ticket" />
+                                    <TextField fx:id="rsv_siege" layoutX="77.0" layoutY="354.0" prefHeight="25.0" prefWidth="189.0" />
+                                    <Label layoutX="5.0" layoutY="237.0" text="Date Départ" />
+                                    <DatePicker fx:id="rsv_date" layoutX="82.0" layoutY="236.0" prefHeight="25.0" prefWidth="189.0" />
+                                    <Label layoutX="5.0" layoutY="276.0" text="Heure Départ" />
+                                    <ComboBox fx:id="rsv_heure" layoutX="81.0" layoutY="272.0" onAction="#listHeure_depart" prefHeight="25.0" prefWidth="186.0" promptText="Heure" />
                                     <TextField fx:id="rsv_id" layoutX="83.0" layoutY="54.0" visible="false" />
+                                    <TextField fx:id="rsv_client_id" layoutX="8.0" layoutY="54.0" prefHeight="25.0" prefWidth="70.0" />
+                                    <TextField fx:id="rsv_trajet_id" layoutX="91.0" layoutY="54.0" prefHeight="25.0" prefWidth="66.0" />
+                                    <TextField fx:id="rsv_bus_mat" editable="false" layoutX="83.0" layoutY="173.0" prefHeight="25.0" prefWidth="188.0" />
+                                    <TextField fx:id="rsv_place" editable="false" layoutX="83.0" layoutY="206.0" prefHeight="25.0" prefWidth="186.0" />
+                                    <Label layoutX="13.0" layoutY="177.0" text="Bus" />
+                                    <Label layoutX="13.0" layoutY="210.0" text="Nbre Place" />
                                  </children>
                                  <styleClass>
                                     <String fx:value="shadow" />
